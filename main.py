@@ -25,6 +25,8 @@ from cocos.sprite import Sprite
 
 import random
 
+from game import *
+
 rr = random.randrange
 
 class MainMenu(Menu):
@@ -61,7 +63,10 @@ class MainMenu(Menu):
 
     # Callbacks
     def on_new_game(self):
-        director.run(StartGame())
+        scene = cocos.scene.Scene()
+        playview = Worldview(scene)
+        scene.add(playview, z=0)
+        director.push(scene)
         print("on_new_game()")
 
     def on_scores(self):
