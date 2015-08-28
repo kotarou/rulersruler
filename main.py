@@ -64,7 +64,7 @@ class MainMenu(Menu):
     # Callbacks
 
     def on_new_game(self):
-        self.parent.switch_to(3)
+        self.parent.switch_to(4)
 
     def on_scores(self):
         self.parent.switch_to(2)
@@ -90,16 +90,42 @@ class LevelMenu(Menu):
         self.menu_halign = CENTER
 
         items = []
-        items.append(ImageMenuItem('Assets/backgroundPreview.png', self.on_new_game))
+        items.append(ImageMenuItem('Assets/backgroundPreview.png', self.on_level_select))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
-    def on_new_game(self):
+    def on_level_select(self):
         scene = cocos.scene.Scene()
         playview = Worldview(scene)
         scene.add(playview, z=0)
         director.push(scene)
         print("on_new_game()")
+
+    def on_quit(self):
+        self.parent.switch_to(4)
+
+class CharacterMenu(Menu):
+
+    def __init__(self):
+        super(CharacterMenu, self).__init__("Characters")
+
+        self.font_title['font_name'] = 'You Are Loved'
+        self.font_title['font_size'] = 72
+
+        self.font_item['font_name'] = 'You Are Loved'
+        self.font_item_selected['font_name'] = 'You Are Loved'
+
+        self.menu_valign = CENTER
+        self.menu_halign = CENTER
+
+        items = []
+
+        items.append(ImageMenuItem('Assets/character1Preview.png', self.on_character_select))
+        items.append(MenuItem('BACK', self.on_quit))
+        self.create_menu(items)
+
+    def on_character_select(self):
+        self.parent.switch_to(3)
 
     def on_quit(self):
         self.parent.switch_to(0)
@@ -161,7 +187,7 @@ def init():
 def start():
     director.set_depth_test()
 
-    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu())
+    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu())
 
     scene = Scene(menulayer)
     return scene
