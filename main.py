@@ -62,12 +62,9 @@ class MainMenu(Menu):
         self.create_menu(items)
 
     # Callbacks
+
     def on_new_game(self):
-        scene = cocos.scene.Scene()
-        playview = Worldview(scene)
-        scene.add(playview, z=0)
-        director.push(scene)
-        print("on_new_game()")
+        self.parent.switch_to(3)
 
     def on_scores(self):
         self.parent.switch_to(2)
@@ -78,6 +75,34 @@ class MainMenu(Menu):
     def on_quit(self):
         director.pop()
 
+class LevelMenu(Menu):
+
+    def __init__(self):
+        super(LevelMenu, self).__init__("Levels")
+
+        self.font_title['font_name'] = 'You Are Loved'
+        self.font_title['font_size'] = 72
+
+        self.font_item['font_name'] = 'You Are Loved'
+        self.font_item_selected['font_name'] = 'You Are Loved'
+
+        self.menu_valign = CENTER
+        self.menu_halign = CENTER
+
+        items = []
+        items.append(ImageMenuItem('Assets/backgroundPreview.png', self.on_new_game))
+        items.append(MenuItem('BACK', self.on_quit))
+        self.create_menu(items)
+
+    def on_new_game(self):
+        scene = cocos.scene.Scene()
+        playview = Worldview(scene)
+        scene.add(playview, z=0)
+        director.push(scene)
+        print("on_new_game()")
+
+    def on_quit(self):
+        self.parent.switch_to(0)
 
 class OptionMenu(Menu):
 
@@ -136,7 +161,7 @@ def init():
 def start():
     director.set_depth_test()
 
-    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu())
+    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu())
 
     scene = Scene(menulayer)
     return scene
