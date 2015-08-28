@@ -222,7 +222,11 @@ class Worldview(cocos.layer.Layer):
             buttons[self.bindings[k]] = 0
         self.buttons = buttons
 
+        ground = Sprite('Assets/ground.png')
+        ground.position = 0, 0
+
         self.schedule(self.update)
+        player_layer.add(ground)
 
 
 
