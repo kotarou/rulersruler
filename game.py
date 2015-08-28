@@ -133,22 +133,22 @@ class Me(ac.Move):
         self.larm = Sprite('Assets/rectangle.png')
         self.larm.position = (-15, -40)
         self.larm.anchor = (0,20)
-        self.larm.rotation = (220)
+        self.larm.rotation = (90)
         self.rarm = Sprite('Assets/rectangle.png')
-        self.rarm.position = (25, -40)
-        self.rarm.anchor = (0, 0)
-        self.rarm.rotation = (-220)
+        self.rarm.position = (15, -40)
+        self.rarm.anchor = (0, 20)
+        self.rarm.rotation = (-90)
         self.body = Sprite('Assets/rectangle.png')
         self.body.position = (0, -40)
-        self.body.anchor = (0, 0)
+        self.body.anchor = (0, 20)
         self.lleg = Sprite('Assets/rectangle.png')
-        self.lleg.position = (-25, -80)
-        self.lleg.anchor = (0, 0)
-        self.lleg.rotation = (220)
+        self.lleg.position = (-15, -80)
+        self.lleg.anchor = (0, 20)
+        self.lleg.rotation = (90)
         self.rleg = Sprite('Assets/rectangle.png')
-        self.rleg.position = (25, -80)
-        self.rleg.anchor = (0, 0)
-        self.rleg.rotation = (-220)
+        self.rleg.position = (15, -80)
+        self.rleg.anchor = (0, 20)
+        self.rleg.rotation = (-90)
 
         self.target.add(self.larm)
         self.target.add(self.rarm)
@@ -228,7 +228,7 @@ class Worldview(cocos.layer.Layer):
 
     def on_key_press(self, k, m):
         binds = self.bindings
-        print(k)
+        #print(k)
         if k in binds:
             self.buttons[binds[k]] = 1
             return True
@@ -249,182 +249,13 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1larm']
         if rot != 0:
             me.larm.rotation = me.larm.rotation  + 10
-
-
-
-        #me.target.do(Me().step())
-    #     # basic geometry
-    #     world = consts['world']
-    #     self.width = world['width']  # world virtual width
-    #     self.height = world['height']  # world virtual height
-    #     self.rPlayer = world['rPlayer']  # player radius in virtual space
-    #     self.wall_scale_min = world['wall_scale_min']
-    #     self.wall_scale_max = world['wall_scale_max']
-    #     self.topSpeed = world['topSpeed']
-    #     self.angular_velocity = world['angular_velocity']
-    #     self.accel = world['accel']
-
-    #     # load resources:
-    #     pics = {}
-    #     pics["player"] = pyglet.resource.image('player7.png')
-    #     pics["food"] = pyglet.resource.image('circle6.png')
-    #     pics["wall"] = pyglet.resource.image('circle6.png')
-    #     self.pics = pics
-
-    #     cell_size = self.rPlayer * self.wall_scale_max * 2.0 * 1.25
-    #     self.collman = cm.CollisionManagerGrid(0.0, self.width,
-    #                                            0.0, self.height,
-    #                                            cell_size, cell_size)
-
-    #     self.bindings = world['bindings']
-    #     buttons = {}
-    #     for k in self.bindings:
-    #         buttons[self.bindings[k]] = 0
-    #     self.buttons = buttons
-
-    #     self.toRemove = set()
-    #     self.schedule(self.update)
-    #     self.ladder_begin()
-
-    # def ladder_begin(self):
-    #     self.level_num = 0
-    #     self.empty_level()
-    #     msg = 'balldrive'
-    #     self.fn_show_message(msg, callback=self.level_launch)
-
-    # def level_launch(self):
-    #     self.generate_random_level()
-    #     msg = 'level %d' % self.level_num
-    #     self.fn_show_message(msg, callback=self.level_start)
-
-    # def level_start(self):
-    #     self.win_status = 'undecided'
-
-    # def level_conquered(self):
-    #     self.win_status = 'intermission'
-    #     msg = 'level %d\nconquered !' % self.level_num
-    #     self.fn_show_message(msg, callback=self.level_next)
-
-    # def level_losed(self):
-    #     self.win_status = 'losed'
-    #     msg = 'ouchhh !!!'
-    #     self.fn_show_message(msg, callback=self.ladder_begin)
-
-    # def level_next(self):
-    #     self.empty_level()
-    #     self.level_num += 1
-    #     self.level_launch()
-
-    # def empty_level(self):
-    #     # del old actors, if any
-    #     for node in self.get_children():
-    #         self.remove(node)
-    #     assert len(self.children) == 0
-    #     self.player = None
-    #     self.gate = None
-    #     self.food_cnt = 0
-    #     self.toRemove.clear()
-
-    #     self.win_status = 'intermission'  # | 'undecided' | 'conquered' | 'losed'
-
-    #     # player phys params
-    #     self.topSpeed = 75.0  # 50.
-    #     self.impulse_dir = eu.Vector2(0.0, 1.0)
-    #     self.impulseForce = 0.0
-
-    # def generate_random_level(self):
-    #     # Generate a random player location (x, y)
-    #     # Choose a random background color
-    #     # etc
-    #     # build !
-    #     width = self.width
-    #     height = self.height
-
-    #     # add player
-    #     cx, cy = (0.5 * width, 0.5 * height)
-    #     self.player = Actor(cx, cy, rPlayer, 'player', pics['player'])
-    #     self.collman.add(self.player)
-
-
-    #     self.add(self.player, z=z)
-    #     z += 1
-
-    # def update(self, dt):
-    #     # if not playing dont update model
-    #     if self.win_status != 'undecided':
-    #         return
-
-    #     # update collman
-    #     self.collman.clear()
-    #     for z, node in self.children:
-    #         self.collman.add(node)
-
-    #     # interactions player - others
-    #     for other in self.collman.iter_colliding(self.player):
-    #         typeball = other.btype
-    #         if typeball == 'food':
-    #             self.toRemove.add(other)
-    #             self.cnt_food -= 1
-    #             if not self.cnt_food:
-    #                 self.open_gate()
-
-    #         elif (typeball == 'wall' or
-    #               typeball == 'gate' and self.cnt_food > 0):
-    #             self.level_losed()
-
-    #         elif typeball == 'gate':
-    #             self.level_conquered()
-
-    #     # update player
-    #     buttons = self.buttons
-    #     ma = buttons['right'] - buttons['left']
-    #     if ma != 0:
-    #         self.player.rotation += ma * dt * self.angular_velocity
-    #         a = math.radians(self.player.rotation)
-    #         self.impulse_dir = eu.Vector2(math.sin(a), math.cos(a))
-
-    #     newVel = self.player.vel
-    #     mv = buttons['up']
-    #     if mv != 0:
-    #         newVel += dt * mv * self.accel * self.impulse_dir
-    #         nv = newVel.magnitude()
-    #         if nv > self.topSpeed:
-    #             newVel *= self.topSpeed / nv
-
-    #     ppos = self.player.cshape.center
-    #     newPos = ppos
-    #     r = self.player.cshape.r
-    #     while dt > 1.e-6:
-    #         newPos = ppos + dt * newVel
-    #         consumed_dt = dt
-    #         # what about screen boundaries ? if colision bounce
-    #         if newPos.x < r:
-    #             consumed_dt = (r - ppos.x) / newVel.x
-    #             newPos = ppos + consumed_dt * newVel
-    #             newVel = -reflection_y(newVel)
-    #         if newPos.x > (self.width - r):
-    #             consumed_dt = (self.width - r - ppos.x) / newVel.x
-    #             newPos = ppos + consumed_dt * newVel
-    #             newVel = -reflection_y(newVel)
-    #         if newPos.y < r:
-    #             consumed_dt = (r - ppos.y) / newVel.y
-    #             newPos = ppos + consumed_dt * newVel
-    #             newVel = reflection_y(newVel)
-    #         if newPos.y > (self.height - r):
-    #             consumed_dt = (self.height - r - ppos.y) / newVel.y
-    #             newPos = ppos + consumed_dt * newVel
-    #             newVel = reflection_y(newVel)
-    #         dt -= consumed_dt
-
-    #     self.player.vel = newVel
-    #     self.player.update_center(newPos)
-
-    #     # at end of frame do removes; as collman is fully regenerated each frame
-    #     # theres no need to update it here.
-    #     for node in self.toRemove:
-    #         self.remove(node)
-    #     self.toRemove.clear()
-
-    # def open_gate(self):
-    #     self.gate.color = Actor.palette['gate']
+        rot = buttons['p1rarm']
+        if rot != 0:
+            me.rarm.rotation = me.rarm.rotation  + 10
+        rot = buttons['p1lleg']
+        if rot != 0:
+            me.lleg.rotation = me.lleg.rotation  + 10
+        rot = buttons['p1rleg']
+        if rot != 0:
+            me.rleg.rotation = me.rleg.rotation  + 10
 
