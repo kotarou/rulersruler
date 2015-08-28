@@ -24,7 +24,21 @@ consts = {
         "vsync": True,
         "resizable": True
     },
-    "world": {
+    "view": {
+        # as the font file is not provided it will decay to the default font;
+        # the setting is retained anyway to not downgrade the code
+        "font_name": 'Axaxax',
+        "palette": {
+            #'bg': (0, 65, 133),
+            'bg': (255, 65, 133),
+            'player': (237, 27, 36),
+            'wall': (247, 148, 29),
+            'gate': (140, 198, 62),
+            'food': (140, 198, 62)
+        }
+    }
+}
+world = {
         "width": 400,
         "height": 300,
         "rPlayer": 8.0,
@@ -43,31 +57,8 @@ consts = {
             key.K: 'p2lleg',
             key.L: 'p2rleg',
         }
-    },
-    "view": {
-        # as the font file is not provided it will decay to the default font;
-        # the setting is retained anyway to not downgrade the code
-        "font_name": 'Axaxax',
-        "palette": {
-            #'bg': (0, 65, 133),
-            'bg': (255, 65, 133),
-            'player': (237, 27, 36),
-            'wall': (247, 148, 29),
-            'gate': (140, 198, 62),
-            'food': (140, 198, 62)
-        }
-    }
 }
-
 # world to view scales
-scale_x = consts["window"]["width"] / consts["world"]["width"]
-scale_y = consts["window"]["height"] / consts["world"]["height"]
-
-
-def world_to_view(v):
-    """world coords to view coords; v an eu.Vector2, returns (float, float)"""
-    return v.x * scale_x, v.y * scale_y
-
 
 # class Actor(cocos.sprite.Sprite):
 #     palette = {}  # injected later
@@ -136,6 +127,42 @@ def reflection_y(a):
     assert isinstance(a, eu.Vector2)
     return eu.Vector2(a.x, -a.y)
 
+class Me(ac.Move):
+    def __init__(self):
+        self.target = Sprite('Assets/crownrb.png')
+        self.larm = Sprite('Assets/rectangle.png')
+        self.larm.position = (-25, -40)
+        self.larm.rotation = (220)
+        self.rarm = Sprite('Assets/rectangle.png')
+        self.rarm.position = (25, -40)
+        self.rarm.rotation = (-220)
+        self.body = Sprite('Assets/rectangle.png')
+        self.body.position = (0, -40)
+        self.lleg = Sprite('Assets/rectangle.png')
+        self.lleg.position = (-25, -80)
+        self.lleg.rotation = (220)
+        self.rleg = Sprite('Assets/rectangle.png')
+        self.rleg.position = (25, -80)
+        self.rleg.rotation = (-220)
+
+        self.target.add(self.larm)
+        self.target.add(self.rarm)
+        self.target.add(self.body)
+        self.target.add(self.lleg)
+        self.target.add(self.rleg)
+
+        self.target.position = (100, 100)
+        self.target.velocity = (0, 0)
+
+    # def step(self, dt):
+    #     super(Me, self).step(dt) # Run step function on the parent class.
+    #     # Determine velocity based on keyboard inputs.
+    #     # velocity_x = 100 * (keyboard[key.RIGHT] - keyboard[key.LEFT])
+    #     # velocity_y = 100 * (keyboard[key.UP] - keyboard[key.DOWN])
+    #     # # Set the object's velocity.
+    #     # self.target.dr = velocity_x * velocity_y
+    #     self.larm.target.dr = 100 * keyboard[key.Q]
+
 
 class Worldview(cocos.layer.Layer):
 
@@ -151,6 +178,12 @@ class Worldview(cocos.layer.Layer):
 
     def __init__(self, scene):
         super(Worldview, self).__init__()
+
+        global keyboard
+        keyboard = key.KeyStateHandler()
+        director.window.push_handlers(keyboard)
+
+
         palette = consts['view']['palette']
         #Actor.palette = palette
         r, g, b = palette['bg']
@@ -160,10 +193,49 @@ class Worldview(cocos.layer.Layer):
         scene.add(message_layer, z=1)
         scene.add(player_layer,z=2)
         self.fn_show_message = message_layer
-        me = Sprite('Assets/crownrb.png')
-        player_layer.add(me)
-        me.position = (100, 100)
-        me.velocity = (0, 0)
+
+        global me
+        me = Me()
+
+        player_layer.add(me.target)
+
+        self.bindings = world['bindings']
+        buttons = {}
+        for k in self.bindings:
+            buttons[self.bindings[k]] = 0
+        self.buttons = buttons
+
+        self.schedule(self.update)
+
+
+
+    def on_key_press(self, k, m):
+        binds = self.bindings
+        print(k)
+        if k in binds:
+            self.buttons[binds[k]] = 1
+            return True
+        return False
+
+    def on_key_release(self, k, m):
+        binds = self.bindings
+        if k in binds:
+            self.buttons[binds[k]] = 0
+            return True
+        return False
+
+    def update(self, dt):
+
+        # update player
+        buttons = self.buttons
+
+        rot = buttons['p1larm']
+        if rot != 0:
+            me.larm.rotation = me.larm.rotation  + 10
+
+
+
+        #me.target.do(Me().step())
     #     # basic geometry
     #     world = consts['world']
     #     self.width = world['width']  # world virtual width
@@ -339,16 +411,3 @@ class Worldview(cocos.layer.Layer):
     # def open_gate(self):
     #     self.gate.color = Actor.palette['gate']
 
-    def on_key_press(self, k, m):
-        binds = self.bindings
-        if k in binds:
-            self.buttons[binds[k]] = 1
-            return True
-        return False
-
-    def on_key_release(self, k, m):
-        binds = self.bindings
-        if k in binds:
-            self.buttons[binds[k]] = 0
-            return True
-        return False
