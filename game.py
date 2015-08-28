@@ -163,6 +163,16 @@ class Me(ac.Move):
     #     # self.target.dr = velocity_x * velocity_y
     #     self.larm.target.dr = 100 * keyboard[key.Q]
 
+class BackgroundLayer(cocos.layer.Layer):
+    """Background layer for all the game."""
+
+    def __init__(self):
+        super(BackgroundLayer, self).__init__()
+        self.sp = Sprite('Assets/background.png') #creates a sprite from the imagefile in the pathname
+        w, h = director.get_window_size() #gets the size of the window
+        self.sp.scale = h / self.sp.height #scales the background image to the size of the window
+        self.sp.position = w//2, h//2 #centers the scaled background iamge
+        self.add(self.sp) #adds the background image to be rendered
 
 class Worldview(cocos.layer.Layer):
 
@@ -186,10 +196,12 @@ class Worldview(cocos.layer.Layer):
 
         palette = consts['view']['palette']
         #Actor.palette = palette
-        r, g, b = palette['bg']
-        scene.add(cocos.layer.ColorLayer(r, g, b, 255), z=-1)
+        #r, g, b = palette['bg']
+        #scene.add(cocos.layer.ColorLayer(r, g, b, 255), z=-1)
+        background_layer = BackgroundLayer()
         message_layer = MessageLayer()
         player_layer = Layer()
+        scene.add(background_layer, z=3)
         scene.add(message_layer, z=1)
         scene.add(player_layer,z=2)
         self.fn_show_message = message_layer
