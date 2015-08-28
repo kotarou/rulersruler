@@ -99,12 +99,18 @@ def sound_volume( vol ):
     global sound_vol
     sound_vol = vol
 
-print("foo")
-#play('tswin.mp3')
-set_music('tswin.mp3')
-queue_music('speech.wav')
-#music_player.play()
-#play_music()
-print(music_player.playing)
-print("done")
-time.sleep(10)
+def play_whack():
+    play('whack.mp3')
+
+def testaud():
+    print("foo")
+    #play('tswin.mp3')
+    set_music('tswin.mp3')
+    queue_music('speech.wav')
+    #music_player.play()
+    #play_music()
+    print(music_player.playing)
+    print("done")
+    time.sleep(10)
+#play_whack()
+#time.sleep(4)
