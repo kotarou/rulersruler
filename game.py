@@ -141,7 +141,7 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self, cIn, xIn, yIn, angleIn):
+    def __init__(self, cIn, start, angleIn):
         global character1, character2
         # self.target = Sprite('Assets/crownrb.png')
         # self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
@@ -332,8 +332,8 @@ class Worldview(cocos.layer.Layer):
         scene.add(self.player_layer,z=3)
         self.fn_show_message = message_layer
 
-        self.player1 = Me(c1, (100, 150))
-        self.player2 = Me(c2, (500, 150))
+        self.player1 = Me(c1, (100, 150), 0)
+        self.player2 = Me(c2, (500, 150), 0)
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
 
