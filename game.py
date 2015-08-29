@@ -180,35 +180,35 @@ class Me(ac.Move):
         # self.body = pm.Body(mass, moment)
         #
 
-        self.torso  = Sprite('Assets/00' + character1 + 'charbody.png')
+        self.torso  = Sprite('00' + character1 + 'charbody.png')
         torso  = pm.Poly(self.body, [[0,0],[40,0],[40,60],[0,60]])
         torso.friction = 1
 
-        self.head   = Sprite('Assets/00' + character1 + 'charhead.png')
+        self.head   = Sprite('00' + character1 + 'charhead.png')
         self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
         head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
         head.friction = 1
         self.head_attach.position = self.body.position + (0,50)
 
-        self.larm   = Sprite('Assets/00' + character1 + 'charlarm.png')
+        self.larm   = Sprite('00' + character1 + 'charlarm.png')
         self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         larm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
         self.larm_attach.friction = 1
         self.larm_attach.position = self.body.position + (-20,60)
 
-        self.rarm   = Sprite('Assets/00' + character1 + 'charrarm.png')
+        self.rarm   = Sprite('00' + character1 + 'charrarm.png')
         self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rarm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
         self.rarm_attach.friction = 1
         self.rarm_attach.position = self.body.position + (20,60)
 
-        self.lleg   = Sprite('Assets/00' + character1 + 'charlleg.png')
+        self.lleg   = Sprite('00' + character1 + 'charlleg.png')
         self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         lleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
         lleg.friction = 1
         self.lleg_attach.position = self.body.position + (-20,-60)
 
-        self.rleg   = Sprite('Assets/00' + character1 + 'charrleg.png')
+        self.rleg   = Sprite('00' + character1 + 'charrleg.png')
         self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,-60],[0,-60]])
         rleg.friction = 1
@@ -387,5 +387,23 @@ class Worldview(cocos.layer.Layer):
         if rot != 0:
             self.player.rleg.rotation = self.player.rleg.rotation  + 10
 
+    class ruler_weapon():
+        
+        def __init__(self, startx, starty):
+            self.xsize = 16
+            self.ysize = 141
+            self.spriteFile = "ruler1p.png"
+            self.currx = startx
+            self.curry = starty
 
+        def draw(self):
+            pass
 
+        def updatepos(xchange, ychange):
+            pass
+
+        #self.head   = Sprite('Assets/00' + character1 + 'charhead.png')
+        #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
+        #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
+        #head.friction = 1
+        #self.head_attach.position = self.body.position + (0,50)

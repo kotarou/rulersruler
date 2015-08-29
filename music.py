@@ -115,8 +115,7 @@ def testaud():
 #play_whack()
 #time.sleep(4)
 
-pyglet.resource.path = ['Assets']
-pyglet.resource.reindex()
+
 fnm = 'pearknight.mp3'
 
 
