@@ -138,7 +138,7 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self, cIn):
+    def __init__(self, cIn, start):
         global character1, character2
         # self.target = Sprite('Assets/crownrb.png')
         # self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
@@ -176,7 +176,7 @@ class Me(ac.Move):
 
         self.body = pm.Body(mass*3, pm.moment_for_box(mass, 80, 160))  # mass, moment
         self.bbody = pm.Poly.create_box(self.body, size=(80, 160))
-        self.body.position = 100, 151  #random.randint(20,400), 200
+        self.body.position = start  #random.randint(20,400), 200
 
         self.body.angle = 10  # random.random() * math.pi
 
@@ -328,8 +328,8 @@ class Worldview(cocos.layer.Layer):
         scene.add(player_layer,z=3)
         self.fn_show_message = message_layer
 
-        self.player1 = Me(c1)
-        self.player2 = Me(c2)
+        self.player1 = Me(c1, (100, 150))
+        self.player2 = Me(c2, (500, 150))
         self.player1.addComponents(player_layer)
         self.player2.addComponents(player_layer)
 
@@ -441,10 +441,10 @@ class Worldview(cocos.layer.Layer):
             self.player2.rarmrot = self.player2.rarmrot  - 10
         rot = buttons['p2Left']
         if rot != 0:
-            self.player.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.player.body.angle = -30
-            self.player.llegrot = self.player.llegrot  - 10
-            self.player.rlegrot = self.player.rlegrot  - 10
+            self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
+            self.player2.body.angle = -30
+            self.player2.llegrot = self.player2.llegrot  - 10
+            self.player2.rlegrot = self.player2.rlegrot  - 10
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
