@@ -72,7 +72,7 @@ class MainMenu(Menu):
         global character1
         character1 = "1"
         scene = cocos.scene.Scene()
-        backgroundLayer = BackgroundLayer('Assets/001background.png')
+        backgroundLayer = BackgroundLayer('001background.png')
         scene.add(backgroundLayer, z=1)
         print("asdf", character1)
         playview = Worldview(scene, character1, character2)
