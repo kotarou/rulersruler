@@ -171,55 +171,61 @@ class Me(ac.Move):
         # space.add(self.s)
 
         # The root node's location
-        self.body = pm.Body(100, 100)  # mass, moment
-        self.body.position = random.randint(20,400), 200
+        mass = 100
+
+        self.body = pm.Body(100, pm.moment_for_box(mass, 40, 60))  # mass, moment
+        self.body.position = 100, 200  #random.randint(20,400), 200
         self.body.angle = 0  # random.random() * math.pi
 
-        mass = 100
         # moment = pm.moment_for_box(mass, 20, 30)
         # self.body = pm.Body(mass, moment)
         #
 
         self.torso  = Sprite('Assets/00' + character1 + 'charbody.png')
-        torso  = pm.Poly(self.body, [[0,0],[40,0],[40,60],[0,60]])
+        torso  = pm.Poly.create_box(self.body, size=(40, 60), offset=(0,0))
         torso.friction = 1
 
         self.head   = Sprite('Assets/00' + character1 + 'charhead.png')
         self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
-        head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
+        head  = pm.Poly.create_box(self.head_attach, size=(40, 40), offset=(0,0))
         head.friction = 1
-        self.head_attach.position = self.body.position + (0,50)
+        self.head_attach.position = self.body.position + (0,65)
 
         self.larm   = Sprite('Assets/00' + character1 + 'charlarm.png')
         self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        larm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
-        self.larm_attach.friction = 1
-        self.larm_attach.position = self.body.position + (-20,60)
+        larm  = pm.Poly.create_box(self.larm_attach, size=(20, 60), offset=(0,0))
+        larm.friction = 1
+        self.larm_attach.position = self.body.position + (-20,40)
 
         self.rarm   = Sprite('Assets/00' + character1 + 'charrarm.png')
         self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        rarm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
-        self.rarm_attach.friction = 1
-        self.rarm_attach.position = self.body.position + (20,60)
+        rarm  = pm.Poly.create_box(self.rarm_attach, size=(20, 60), offset=(0,0))
+        rarm.friction = 1
+        self.rarm_attach.position = self.body.position + (40,40)
 
         self.lleg   = Sprite('Assets/00' + character1 + 'charlleg.png')
         self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        lleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
+        lleg  = pm.Poly.create_box(self.lleg_attach, size=(20, 60), offset=(0,0))
         lleg.friction = 1
-        self.lleg_attach.position = self.body.position + (-20,-60)
+        self.lleg_attach.position = self.body.position + (-5,-65)
 
         self.rleg   = Sprite('Assets/00' + character1 + 'charrleg.png')
         self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        rleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,-60],[0,-60]])
+        rleg  = pm.Poly.create_box(self.rleg_attach, size=(20, 60), offset=(0,0))
         rleg.friction = 1
-        self.rleg_attach.position = self.body.position + (20,-60)
+        self.rleg_attach.position = self.body.position + (15,-65)
 
 
         body_head = pm.PinJoint(self.body, self.head_attach, (20,60), (20,0))
-        body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (0,0))
-        body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,0))
-        body_lleg = pm.PinJoint(self.body, self.lleg_attach, (0,0), (0,0))
-        body_rleg = pm.PinJoint(self.body, self.rleg_attach, (40,0), (0,0))
+        body_head.distance = 5
+        body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (20,60))
+        body_larm.distance = 5
+        body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,60))
+        body_rarm.distance = 5
+        body_lleg = pm.PinJoint(self.body, self.lleg_attach, (10,0), (20,60))
+        body_lleg.distance = 5
+        body_rleg = pm.PinJoint(self.body, self.rleg_attach, (30,0), (0,60))
+        body_rleg.distance = 5
 
         space.add(self.body, self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
                   body_head, body_larm, body_rarm, body_lleg, body_rleg,
@@ -233,14 +239,6 @@ class Me(ac.Move):
         self.rarm.set_position(*self.rarm_attach.position)
         self.lleg.set_position(*self.lleg_attach.position)
         self.rleg.set_position(*self.rleg_attach.position)
-        #self.sprite.set_position(*self.body.position)
-        # self.torso.set_position(self.body.position[0], self.body.position[1])
-        # #self.head.set_position(self.headBody.position[0]+self.rootPos[0], self.headBody.position[1]+self.rootPos[1])
-        # self.larm.set_position(self.body.position[0]-20, self.body.position[1]+20)
-        # self.rarm.set_position(self.body.position[0]+20, self.body.position[1]+20)
-        # self.lleg.set_position(self.body.position[0]-12, self.body.position[1]-40)
-        # self.rleg.set_position(self.body.position[0]+12, self.body.position[1]-40)
-        #self.head.set_position(self.body.position[0], self.body.position[1])
 
     def addComponents(self, layer):
         layer.add(self.lleg)
@@ -250,8 +248,6 @@ class Me(ac.Move):
         layer.add(self.head)
         layer.add(self.torso)
         pass
-        # layer.add(self.lleg)
-        # layer.add(self.rleg)
 
 class Worldview(cocos.layer.Layer):
 
