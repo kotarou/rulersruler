@@ -29,6 +29,7 @@ from game import *
 
 rr = random.randrange
 
+
 class MainMenu(Menu):
 
     def __init__(self):
@@ -130,8 +131,12 @@ class BackgroundLayer(cocos.layer.Layer):
 
 class CharacterMenu(Menu):
 
+    global character
+
     def __init__(self):
         super(CharacterMenu, self).__init__("Characters")
+
+        self.character = "0"
 
         self.font_title['font_name'] = 'You Are Loved'
         self.font_title['font_size'] = 72
@@ -144,11 +149,17 @@ class CharacterMenu(Menu):
 
         items = []
 
-        items.append(ImageMenuItem('Assets/character1Preview.png', self.on_character_select))
+        items.append(ImageMenuItem('Assets/001charhead.png', self.on_001char_select))
+        items.append(ImageMenuItem('Assets/002charhead.png', self.on_002char_select))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
-    def on_character_select(self):
+    def on_001char_select(self):
+        self.character = "1"
+        self.parent.switch_to(3)
+
+    def on_002char_select(self):
+        self.character = "2"
         self.parent.switch_to(3)
 
     def on_quit(self):

@@ -15,6 +15,8 @@ import cocos.actions as ac
 from cocos.sprite import Sprite
 from cocos.layer import *
 
+global character
+
 
 fe = 1.0e-4
 consts = {
@@ -130,25 +132,25 @@ def reflection_y(a):
 class Me(ac.Move):
     def __init__(self):
         self.target = Sprite('Assets/crownrb.png')
-        self.head = Sprite('Assets/charhead.png')
-        self.head.position = (0, -35)
+        self.head = Sprite('Assets/00' + character + 'charhead.png')
+        self.head.position = (0, -30)
         self.head.anchor = (0, 20)
-        self.larm = Sprite('Assets/charrarm.png')
+        self.larm = Sprite('Assets/00' + character + 'charrarm.png')
         self.larm.position = (-15, -80)
         self.larm.anchor = (0,20)
         self.larm.rotation = (90)
-        self.rarm = Sprite('Assets/charlarm.png')
+        self.rarm = Sprite('Assets/00' + character + 'charlarm.png')
         self.rarm.position = (15, -80)
         self.rarm.anchor = (0, 20)
         self.rarm.rotation = (-90)
-        self.body = Sprite('Assets/charbody.png')
+        self.body = Sprite('Assets/00' + character + 'charbody.png')
         self.body.position = (0, -80)
         self.body.anchor = (0, 20)
-        self.lleg = Sprite('Assets/charlleg.png')
+        self.lleg = Sprite('Assets/00' + character + 'charlleg.png')
         self.lleg.position = (-15, -120)
         self.lleg.anchor = (0, 20)
         self.lleg.rotation = (90)
-        self.rleg = Sprite('Assets/charrleg.png')
+        self.rleg = Sprite('Assets/00' + character + 'charrleg.png')
         self.rleg.position = (15, -120)
         self.rleg.anchor = (0, 20)
         self.rleg.rotation = (-90)
