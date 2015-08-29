@@ -67,6 +67,7 @@ world = {
             key.RIGHT: 'p2Right',
             key.UP: 'p2Up',
             key.DOWN: 'p2Down',
+            key.Z: 'p1die',
         }
 }
 
@@ -74,7 +75,6 @@ character1 = character2 = "0"
 
 space = pm.Space()
 space.gravity = Vec2d(0.0, -900.0)
-logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
 batch = pyglet.graphics.Batch()
 
 # world to view scales
@@ -307,10 +307,11 @@ class Worldview(cocos.layer.Layer):
         end-of-level conditions.
         Level progression.
     """
-    gamestate = None
     is_event_handler = True
 
-    def __init__(self, scene, c1, c2):
+    def __init__(self, scene, c1, c2, roundmanager):
+        self.roundmanager = roundmanager
+
         super(Worldview, self).__init__()
 
         global keyboard
@@ -477,6 +478,11 @@ class Worldview(cocos.layer.Layer):
             self.player2.body.angle = 30
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
+
+        rot = buttons['p1die']
+        if rot != 0:
+            print(self.roundmanager.gamestate)
+            self.roundmanager.player_win("p1","p2")
 
 class Weapon(Layer):
     def __init__(self):

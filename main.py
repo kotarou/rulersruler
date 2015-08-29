@@ -127,15 +127,21 @@ class LevelMenu(Menu):
         print("on_new_game()")
 
     def on_level_select_2(self):
-        global character1
-        print("asdf", character1)
-        scene = cocos.scene.Scene()
-        backgroundLayer = BackgroundLayer('002background.png')
-        scene.add(backgroundLayer, z=1)
-        playview = Worldview(scene, character1, character2)
-        scene.add(playview, z=0)
-        director.push(scene)
-        print("on_new_game()")
+        # scene = cocos.scene.Scene()
+        # backgroundLayer = BackgroundLayer('002background.png')
+        # scene.add(backgroundLayer, z=1)
+        roundmanager = RoundManager()
+        roundmanager.level_start('002background.png')
+
+        # global character1
+        # print("asdf", character1)
+        # scene = cocos.scene.Scene()
+        # backgroundLayer = BackgroundLayer('002background.png')
+        # scene.add(backgroundLayer, z=1)
+        # playview = Worldview(scene, character1, character2)
+        # scene.add(playview, z=0)
+        # director.push(scene)
+        # print("on_new_game()")
 
     def on_quit(self):
         self.parent.switch_to(4)
@@ -236,6 +242,45 @@ class ScoreMenu(Menu):
 
     def on_quit(self):
         self.parent.switch_to(0)
+
+
+class RoundManager():
+
+    def __init__(self):
+        self.gamestate = ""
+        self.p1crowns = []
+        self.p2crowns = []
+        
+    def level_start(self, backgroundPathIn):
+
+        self.gamestate = 'round start'
+
+        global character1, character2
+        scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer(backgroundPathIn)
+        scene.add(backgroundLayer, z=1)
+        playview = Worldview(scene, character1, character2, self)
+        scene.add(playview, z=0)
+        director.push(scene)
+
+    def player_win(self, winner, loser):
+        self.genwinmessage(winner, loser)
+        self.crown(winner)
+        self.gamestate = 'round end'
+        self.reset_round()
+
+    def genwinmessage(self, winner, loser):
+        print("player has won")
+        print(winner + " has overruled " + loser)
+
+    def crown(self, winner):
+        pass
+        # give winner a crown
+
+    def reset_round(self):
+        # any cleanup goes here, or ending the system
+        director.push(director.pop())
+
 
 
 def init():
