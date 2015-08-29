@@ -130,22 +130,22 @@ def reflection_y(a):
 class Me(ac.Move):
     def __init__(self):
         self.target = Sprite('Assets/crownrb.png')
-        self.larm = Sprite('Assets/rectangle.png')
+        self.larm = Sprite('Assets/charrarm.png')
         self.larm.position = (-15, -40)
         self.larm.anchor = (0,20)
         self.larm.rotation = (90)
-        self.rarm = Sprite('Assets/rectangle.png')
+        self.rarm = Sprite('Assets/charlarm.png')
         self.rarm.position = (15, -40)
         self.rarm.anchor = (0, 20)
         self.rarm.rotation = (-90)
-        self.body = Sprite('Assets/rectangle.png')
+        self.body = Sprite('Assets/charbody.png')
         self.body.position = (0, -40)
         self.body.anchor = (0, 20)
-        self.lleg = Sprite('Assets/rectangle.png')
+        self.lleg = Sprite('Assets/charlleg.png')
         self.lleg.position = (-15, -80)
         self.lleg.anchor = (0, 20)
         self.lleg.rotation = (90)
-        self.rleg = Sprite('Assets/rectangle.png')
+        self.rleg = Sprite('Assets/charrleg.png')
         self.rleg.position = (15, -80)
         self.rleg.anchor = (0, 20)
         self.rleg.rotation = (-90)
@@ -166,13 +166,6 @@ class Me(ac.Move):
     #     # velocity_y = 100 * (keyboard[key.UP] - keyboard[key.DOWN])
     #     # # Set the object's velocity.
     #     self.larm.target.dr = 100 * keyboard[key.Q]
-
-"""KLIMPEN TO DO THIS SHIT"""
-
-# class CharacterBackgroundArguments():
-#     def __init__(self, characterIn, backgroundIn):
-#         self.background = Sprite('Assets/background.png')
-#         self.character = Sprite('Assets/characterPreview.png')
 
 class Worldview(cocos.layer.Layer):
 
