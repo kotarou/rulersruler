@@ -7,7 +7,7 @@ import os, sys
 import pyglet
 from pyglet.window import key
 from pyglet.gl import *
-
+import cocos.actions.instant_actions as ic
 import cocos
 from cocos.director import director
 import cocos.collision_model as cm
@@ -143,7 +143,7 @@ def reflection_y(a):
 class Me(ac.Move):
     def __init__(self, cIn, start, angleIn):
         global character1, character2
-
+        self.c = cIn
         # The root node's location
         mass = 100
 
@@ -160,10 +160,12 @@ class Me(ac.Move):
         #
 
         self.torso  = Sprite('00' + cIn + 'charbody.png')
+        self.torsor  = Sprite('00' + cIn + 'charbodyreversed.png')
         # torso  = pm.Poly.create_box(self.body, size=(40, 60), offset=(20,60))
         #torso.friction = 10
 
         self.head   = Sprite('00' + cIn + 'charhead.png')
+        self.headr  = Sprite('00' + cIn + 'charheadreversed.png')
         # self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
         # head  = pm.Poly.create_box(self.body, size=(40, 40), offset=(20,120))
         # head.friction = 10
@@ -201,6 +203,8 @@ class Me(ac.Move):
         # body_rleg.distance = 0
         self.torso.rotation = self.body.angle
         self.head.rotation = self.body.angle
+        self.torsor.rotation = self.body.angle
+        self.headr.rotation = self.body.angle
         self.larm.rotation = self.body.angle
         self.rarm.rotation = self.body.angle
         self.lleg.rotation = self.body.angle
@@ -220,11 +224,10 @@ class Me(ac.Move):
 
 
     def alignPhys(self):
-
-
-
         self.torso.set_position(*self.body.position + (20,60))
         self.head.set_position(*self.body.position + (20,120))
+        self.torsor.set_position(*self.body.position + (20,60))
+        self.headr.set_position(*self.body.position + (20,120))
         self.larm.set_position(*self.body.position + (0,60))
         self.rarm.set_position(*self.body.position + (60,60))
         self.lleg.set_position(*self.body.position + (20,0))
@@ -232,6 +235,8 @@ class Me(ac.Move):
 
         self.torso.rotation = self.body.angle
         self.head.rotation = self.body.angle
+        self.torsor.rotation = self.body.angle
+        self.headr.rotation = self.body.angle
         self.larm.rotation = self.body.angle + self.larmrot
         self.rarm.rotation = self.body.angle + self.rarmrot
         self.lleg.rotation = self.body.angle + self.llegrot
@@ -244,6 +249,8 @@ class Me(ac.Move):
         layer.add(self.rarm)
         layer.add(self.head)
         layer.add(self.torso)
+        layer.add(self.headr)
+        layer.add(self.torsor)
         pass
 
 class Worldview(cocos.layer.Layer):
@@ -346,14 +353,14 @@ class Worldview(cocos.layer.Layer):
         self.player1.alignPhys()
         self.player2.alignPhys()
 
-        a = self.player1.bbody.cache_bb()
-        try:
-            self.scene.remove("bb")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "bb")
+        # a = self.player1.bbody.cache_bb()
+        # try:
+        #     self.scene.remove("bb")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "bb")
 
 
         # print(self.player.head.position)
@@ -368,35 +375,35 @@ class Worldview(cocos.layer.Layer):
 
         #print(self.player1.bbody.bb)
 
+        #self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
         rot = buttons['p1Up']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  + 10
             self.player1.rarmrot = self.player1.rarmrot  + 10
         rot = buttons['p1Down']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  - 10
             self.player1.rarmrot = self.player1.rarmrot  - 10
         rot = buttons['p1Left']
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
-            self.player1.body.angular_velocity -= 1
-            # self.player1.body.angle = -30
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
+            self.player1.torsor.do(ac.Show())
+            self.player1.torso.do(ac.Hide())
+            self.player1.headr.do(ac.Show())
+            self.player1.head.do(ac.Hide())
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
-            # self.player1.body.angle = 30
-            self.player1.body.angular_velocity += 1
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
-            self.player1.bbody
+            self.player1.torso.do(ac.Show())
+            self.player1.torsor.do(ac.Hide())
+            self.player1.head.do(ac.Show())
+            self.player1.headr.do(ac.Hide())
 
         rot = buttons['p2Up']
         if rot != 0:
@@ -414,14 +421,12 @@ class Worldview(cocos.layer.Layer):
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
             #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
-            self.player2.body.angle = -30
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
             #self.ruler.body.apply_impulse(j=(100,0), r=(0, 0))
-            self.player2.body.angle = 30
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
 
