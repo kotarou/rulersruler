@@ -77,6 +77,7 @@ space = pm.Space()
 space.gravity = Vec2d(0.0, -900.0)
 logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
 batch = pyglet.graphics.Batch()
+
 # world to view scales
 
 # class Actor(cocos.sprite.Sprite):
@@ -305,6 +306,7 @@ class Worldview(cocos.layer.Layer):
         end-of-level conditions.
         Level progression.
     """
+    gamestate = None
     is_event_handler = True
 
     def __init__(self, scene, c1, c2):
@@ -439,6 +441,36 @@ class Worldview(cocos.layer.Layer):
             self.player.llegrot = self.player.llegrot  + 10
             self.player.rlegrot = self.player.rlegrot  + 10
 
+
+    def ladder_begin(self):
+        self.level_num = 0
+        self.empty_level()
+        msg = 'balldrive'
+        self.fn_show_message(msg, callback=self.level_launch)
+
+    def level_launch(self):
+        self.generate_random_level()
+        msg = 'level %d' % self.level_num
+        self.fn_show_message(msg, callback=self.level_start)
+
+    def level_start(self):
+        self.win_status = 'undecided'
+
+    def level_conquered(self):
+        self.win_status = 'intermission'
+        msg = 'level %d\nconquered !' % self.level_num
+        self.fn_show_message(msg, callback=self.level_next)
+
+    def level_losed(self):
+        self.win_status = 'losed'
+        msg = 'ouchhh !!!'
+        self.fn_show_message(msg, callback=self.ladder_begin)
+
+    def level_next(self):
+        self.empty_level()
+        self.level_num += 1
+    #    self.level_launch()
+
 class Weapon(Layer):
     def __init__(self):
         self.xsize = 16
@@ -457,7 +489,7 @@ class Weapon(Layer):
 
     def hitPlayer(self, player):
         pass
-        
+
     #self.head   
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
     #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
@@ -466,31 +498,4 @@ class Weapon(Layer):
 
 # Useful example code
 
-    #         def ladder_begin(self):
-    #     self.level_num = 0
-    #     self.empty_level()
-    #     msg = 'balldrive'
-    #     self.fn_show_message(msg, callback=self.level_launch)
 
-    # def level_launch(self):
-    #     self.generate_random_level()
-    #     msg = 'level %d' % self.level_num
-    #     self.fn_show_message(msg, callback=self.level_start)
-
-    # def level_start(self):
-    #     self.win_status = 'undecided'
-
-    # def level_conquered(self):
-    #     self.win_status = 'intermission'
-    #     msg = 'level %d\nconquered !' % self.level_num
-    #     self.fn_show_message(msg, callback=self.level_next)
-
-    # def level_losed(self):
-    #     self.win_status = 'losed'
-    #     msg = 'ouchhh !!!'
-    #     self.fn_show_message(msg, callback=self.ladder_begin)
-
-    # def level_next(self):
-    #     self.empty_level()
-    #     self.level_num += 1
-    #     self.level_launch()
