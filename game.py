@@ -186,60 +186,70 @@ class Me(ac.Move):
         torso.friction = 10
 
         self.head   = Sprite('00' + character1 + 'charhead.png')
-        self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
-        head  = pm.Poly.create_box(self.head_attach, size=(40, 40), offset=(0,0))
+        # self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
+        head  = pm.Poly.create_box(self.body, size=(40, 40))  # , offset=(0,60))
         head.friction = 10
-        self.head_attach.position = self.body.position + (0,60)  # + (0,65)
+        # self.head_attach.position = self.body.position + (0,60)
 
         self.larm   = Sprite('00' + character1 + 'charlarm.png')
-        self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        larm  = pm.Poly.create_box(self.larm_attach, size=(20, 60), offset=(0,0))
+        # self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
+        larm  = pm.Poly.create_box(self.body, size=(20, 60))  # , offset=(-20,0))
         larm.friction = 10
-        self.larm_attach.position = self.body.position + (-20,0)  # + (-20,40)
+        # self.larm_attach.position = self.body.position + (-20,0)
 
         self.rarm   = Sprite('00' + character1 + 'charrarm.png')
-        self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        rarm  = pm.Poly.create_box(self.rarm_attach, size=(20, 60), offset=(0,0))
+        # self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
+        rarm  = pm.Poly.create_box(self.body, size=(20, 60))  # , offset=(40,0))
         rarm.friction = 10
-        self.rarm_attach.position = self.body.position + (40,0)  # + (40,40)
+        # self.rarm_attach.position = self.body.position + (40,0)
 
         self.lleg   = Sprite('00' + character1 + 'charlleg.png')
-        self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        lleg  = pm.Poly.create_box(self.lleg_attach, size=(20, 60), offset=(0,0))
+        # self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
+        lleg  = pm.Poly.create_box(self.body, size=(20, 60))  # , offset=(0,-60) )
         lleg.friction = 10
-        self.lleg_attach.position = self.body.position + (0,-60)  # + (0,-65)
+        # self.lleg_attach.position = self.body.position + (0,-60)
 
         self.rleg   = Sprite('00' + character1 + 'charrleg.png')
-        self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
-        rleg  = pm.Poly.create_box(self.rleg_attach, size=(20, 60), offset=(0,0))
+        # self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
+        rleg  = pm.Poly.create_box(self.body, size=(20, 60))  # , offset=(20,-60))
         rleg.friction = 10
-        self.rleg_attach.position = self.body.position + (20,-60)  # + (20,-65)
+        # self.rleg_attach.position = self.body.position + (20,-60)
+
+        # head_attach
+        # larm_attach
+        # rarm_attach
+        # lleg_attach
+        # rleg_attach
+
+        # body_head = pm.PinJoint(self.body, self.head_attach, (20,60), (20,0))
+        # body_head.distance = 0
+        # body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (20,60))
+        # body_larm.distance = 0
+        # body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,60))
+        # body_rarm.distance = 0
+        # body_lleg = pm.PinJoint(self.body, self.lleg_attach, (0,0), (0,60))
+        # body_lleg.distance = 0
+        # body_rleg = pm.PinJoint(self.body, self.rleg_attach, (40,0), (20,60))
+        # body_rleg.distance = 0
 
 
-        body_head = pm.PinJoint(self.body, self.head_attach, (20,60), (20,0))
-        body_head.distance = 0
-        body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (20,60))
-        body_larm.distance = 0
-        body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,60))
-        body_rarm.distance = 0
-        body_lleg = pm.PinJoint(self.body, self.lleg_attach, (0,0), (0,60))
-        body_lleg.distance = 0
-        body_rleg = pm.PinJoint(self.body, self.rleg_attach, (40,0), (20,60))
-        body_rleg.distance = 0
-
-
-        space.add(self.body, self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
-                  body_head, body_larm, body_rarm, body_lleg, body_rleg,
+        space.add(self.body, #self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
+                  #body_head, body_larm, body_rarm, body_lleg, body_rleg,
                   head, torso, larm, rarm, lleg, rleg)
 
 
     def alignPhys(self):
-        self.head.set_position(*self.head_attach.position)
+        #self.head.set_position(*self.head_attach.position)
         self.torso.set_position(*self.body.position)
-        self.larm.set_position(*self.larm_attach.position)
-        self.rarm.set_position(*self.rarm_attach.position)
-        self.lleg.set_position(*self.lleg_attach.position)
-        self.rleg.set_position(*self.rleg_attach.position)
+        #self.larm.set_position(*self.larm_attach.position)
+        #self.rarm.set_position(*self.rarm_attach.position)
+        #self.lleg.set_position(*self.lleg_attach.position)
+        #self.rleg.set_position(*self.rleg_attach.position)
+        self.head.set_position(*self.body.position + (0,55))
+        self.larm.set_position(*self.body.position + (-40,0))
+        self.rarm.set_position(*self.body.position + (40,0))
+        self.lleg.set_position(*self.body.position + (-20,-60))
+        self.rleg.set_position(*self.body.position + (20,-60))
 
     def addComponents(self, layer):
         layer.add(self.lleg)
@@ -345,8 +355,8 @@ class Worldview(cocos.layer.Layer):
 
         #print(self.player.sprite.position)
 
-        print(self.player.head.position)
-        print(self.player.head_attach.position)
+        # print(self.player.head.position)
+        # print(self.player.head_attach.position)
         pdt = 1.0/60.  # override dt to keep physics simulation stable
         space.step(pdt)
 
@@ -388,3 +398,35 @@ class Worldview(cocos.layer.Layer):
         #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
         #head.friction = 1
         #self.head_attach.position = self.body.position + (0,50)
+
+# Useful example code
+
+    #         def ladder_begin(self):
+    #     self.level_num = 0
+    #     self.empty_level()
+    #     msg = 'balldrive'
+    #     self.fn_show_message(msg, callback=self.level_launch)
+
+    # def level_launch(self):
+    #     self.generate_random_level()
+    #     msg = 'level %d' % self.level_num
+    #     self.fn_show_message(msg, callback=self.level_start)
+
+    # def level_start(self):
+    #     self.win_status = 'undecided'
+
+    # def level_conquered(self):
+    #     self.win_status = 'intermission'
+    #     msg = 'level %d\nconquered !' % self.level_num
+    #     self.fn_show_message(msg, callback=self.level_next)
+
+    # def level_losed(self):
+    #     self.win_status = 'losed'
+    #     msg = 'ouchhh !!!'
+    #     self.fn_show_message(msg, callback=self.ladder_begin)
+
+    # def level_next(self):
+    #     self.empty_level()
+    #     self.level_num += 1
+    #     self.level_launch()
+
