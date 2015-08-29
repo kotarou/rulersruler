@@ -387,6 +387,8 @@ class Weapon(Layer):
     def addComponents(self, layer):
         layer.add(self.wsprite)
 
+    def hitPlayer(self, player):
+        pass
     #self.head   
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
     #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
