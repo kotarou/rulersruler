@@ -55,6 +55,7 @@ class MainMenu(Menu):
 
         items = []
 
+        items.append(MenuItem('QuickStart', self.on_quick_start))
         items.append(MenuItem('New Game', self.on_new_game))
         items.append(MenuItem('Options', self.on_options))
         items.append(MenuItem('Scores', self.on_scores))
@@ -63,6 +64,18 @@ class MainMenu(Menu):
         self.create_menu(items)
 
     # Callbacks
+
+    def on_quick_start(self):
+        global character1
+        character1 = "1"
+        scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer('Assets/001background.png')
+        scene.add(backgroundLayer, z=1)
+        print("asdf", character1)
+        playview = Worldview(scene, character1, character2)
+        scene.add(playview, z=0)
+        director.push(scene)
+        print("on_new_game()")
 
     def on_new_game(self):
         self.parent.switch_to(4)
