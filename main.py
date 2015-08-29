@@ -71,6 +71,7 @@ class MainMenu(Menu):
     def on_quick_start(self):
         global character1
         character1 = "1"
+        character2 = "2"
         scene = cocos.scene.Scene()
         backgroundLayer = BackgroundLayer('001background.png')
         scene.add(backgroundLayer, z=1)

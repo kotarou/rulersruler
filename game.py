@@ -56,18 +56,14 @@ world = {
         "angular_velocity": 240.0,  # degrees / s
         "accel": 85.0,
         "bindings": {
-            key.Q: 'p1larm',
-            key.W: 'p1rarm',
-            key.A: 'p1lleg',
-            key.S: 'p1rleg',
-            key.I: 'p2larm',
-            key.O: 'p2rarm',
-            key.K: 'p2lleg',
-            key.L: 'p2rleg',
-            key.LEFT: 'testL',
-            key.RIGHT: 'testR',
-            key.UP: 'testU',
-            key.DOWN: 'testD',
+            key.W: 'p1Up',
+            key.A: 'p1Left',
+            key.S: 'p1Down',
+            key.D: 'p1Right',
+            key.LEFT: 'p2Left',
+            key.RIGHT: 'p2Right',
+            key.UP: 'p2Up',
+            key.DOWN: 'p2Down',
         }
 }
 
@@ -141,8 +137,8 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self):
-        global character1
+    def __init__(self, cIn):
+        global character1, character2
         # self.target = Sprite('Assets/crownrb.png')
         # self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
         # self.larm.position = (-15, -80)
@@ -179,24 +175,24 @@ class Me(ac.Move):
 
         self.body = pm.Body(mass*3, pm.moment_for_box(mass, 80, 160))  # mass, moment
         self.bbody = pm.Poly.create_box(self.body, size=(80, 160))
-        self.body.position = 100, 51  #random.randint(20,400), 200
+        self.body.position = 100, 151  #random.randint(20,400), 200
         self.body.angle = 10  # random.random() * math.pi
 
         # moment = pm.moment_for_box(mass, 20, 30)
         # self.body = pm.Body(mass, moment)
         #
 
-        self.torso  = Sprite('00' + character1 + 'charbody.png')
+        self.torso  = Sprite('00' + cIn + 'charbody.png')
         # torso  = pm.Poly.create_box(self.body, size=(40, 60), offset=(20,60))
         #torso.friction = 10
 
-        self.head   = Sprite('00' + character1 + 'charhead.png')
+        self.head   = Sprite('00' + cIn + 'charhead.png')
         # self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
         # head  = pm.Poly.create_box(self.body, size=(40, 40), offset=(20,120))
         # head.friction = 10
         # self.head_attach.position = self.body.position + (0,60)
 
-        self.larm   = Sprite('00' + character1 + 'charlarm.png')
+        self.larm   = Sprite('00' + cIn + 'charlarm.png')
         self.larm.anchor = (15, 30)
         #self.larm.anchor = (20, 60)
         # self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
@@ -204,21 +200,21 @@ class Me(ac.Move):
         # larm.friction = 10
         # self.larm_attach.position = self.body.position + (-20,0)
 
-        self.rarm   = Sprite('00' + character1 + 'charrarm.png')
+        self.rarm   = Sprite('00' + cIn + 'charrarm.png')
         self.rarm.anchor = (-15, 30)
         # self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         # rarm  = pm.Poly.create_box(self.body, size=(20, 60), offset=(60,60))
         # rarm.friction = 10
         # self.rarm_attach.position = self.body.position + (40,0)
 
-        self.lleg   = Sprite('00' + character1 + 'charlleg.png')
+        self.lleg   = Sprite('00' + cIn + 'charlleg.png')
         self.lleg.anchor = (0, 30)
         # self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         # lleg  = pm.Poly.create_box(self.body, size=(20, 60), offset=(20,0))
         # lleg.friction = 10
         # self.lleg_attach.position = self.body.position + (0,-60)
 
-        self.rleg   = Sprite('00' + character1 + 'charrleg.png')
+        self.rleg   = Sprite('00' + cIn + 'charrleg.png')
         self.rleg.anchor = (0, 30)
         # self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         # rleg  = pm.Poly.create_box(self.body, size=(20, 60), offset=(40,0))
@@ -329,8 +325,10 @@ class Worldview(cocos.layer.Layer):
         scene.add(player_layer,z=2)
         self.fn_show_message = message_layer
 
-        self.player = Me()
-        self.player.addComponents(player_layer)
+        self.player1 = Me(c1)
+        self.player2 = Me(c2)
+        self.player1.addComponents(player_layer)
+        self.player2.addComponents(player_layer)
 
         self.weapon = Weapon()
         self.weapon.addComponents(player_layer)
@@ -379,7 +377,8 @@ class Worldview(cocos.layer.Layer):
 
     def update(self, dt):
 
-        self.player.alignPhys()
+        self.player1.alignPhys()
+        self.player2.alignPhys()
         #pymunk.pyglet_util.draw(space)
         # for line in self.static_lines:
         #     body = line.body
@@ -403,41 +402,52 @@ class Worldview(cocos.layer.Layer):
         buttons = self.buttons
 
         # Check key presses
-        rot = buttons['p1larm']
-        if rot != 0:
-            self.player.larmrot = self.player.larmrot  + 10
-        rot = buttons['p1rarm']
-        if rot != 0:
-            self.player.rarmrot = self.player.rarmrot  + 10
-        rot = buttons['p1lleg']
-        if rot != 0:
-            self.player.llegrot = self.player.llegrot  + 10
-        rot = buttons['p1rleg']
-        if rot != 0:
-            self.player.rlegrot = self.player.rlegrot  + 10
 
-        rot = buttons['testU']
+        rot = buttons['p1Up']
         if rot != 0:
-            self.player.body.apply_impulse(j=(0,5000), r=(0, 0))
-            self.player.larmrot = self.player.larmrot  + 10
-            self.player.rarmrot = self.player.rarmrot  + 10
-        rot = buttons['testD']
+            self.player1.body.apply_impulse(j=(0,5000), r=(0, 0))
+            self.player1.larmrot = self.player1.larmrot  + 10
+            self.player1.rarmrot = self.player1.rarmrot  + 10
+        rot = buttons['p1Down']
         if rot != 0:
-            self.player.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            self.player.larmrot = self.player.larmrot  - 10
-            self.player.rarmrot = self.player.rarmrot  - 10
-        rot = buttons['testL']
+            self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
+            self.player1.larmrot = self.player1.larmrot  - 10
+            self.player1.rarmrot = self.player1.rarmrot  - 10
+        rot = buttons['p1Left']
         if rot != 0:
-            self.player.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.player.body.angle = 330
-            self.player.llegrot = self.player.llegrot  - 10
-            self.player.rlegrot = self.player.rlegrot  - 10
-        rot = buttons['testR']
+            self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
+            self.player1.body.angle = 330
+            self.player1.llegrot = self.player1.llegrot  - 10
+            self.player1.rlegrot = self.player1.rlegrot  - 10
+        rot = buttons['p1Right']
         if rot != 0:
-            self.player.body.apply_impulse(j=(200,0), r=(0, 0))
-            self.player.body.angle = 30
-            self.player.llegrot = self.player.llegrot  + 10
-            self.player.rlegrot = self.player.rlegrot  + 10
+            self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
+            self.player1.body.angle = 30
+            self.player1.llegrot = self.player1.llegrot  + 10S
+            self.player1.rlegrot = self.player1.rlegrot  + 10
+
+        rot = buttons['p2Up']
+        if rot != 0:
+            self.player2.body.apply_impulse(j=(0,5000), r=(0, 0))
+            self.player2.larmrot = self.player2.larmrot  + 10
+            self.player2.rarmrot = self.player2.rarmrot  + 10
+        rot = buttons['p2Down']
+        if rot != 0:
+            self.player2.body.apply_impulse(j=(0,-5000), r=(0, 0))
+            self.player2.larmrot = self.player2.larmrot  - 10
+            self.player2.rarmrot = self.player2.rarmrot  - 10
+        rot = buttons['p2Left']
+        if rot != 0:
+            self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
+            self.player2.body.angle = 330
+            self.player2.llegrot = self.player2.llegrot  - 10
+            self.player2.rlegrot = self.player2.rlegrot  - 10
+        rot = buttons['p2Right']
+        if rot != 0:
+            self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
+            self.player2.body.angle = 30
+            self.player2.llegrot = self.player2.llegrot  + 10
+            self.player2.rlegrot = self.player2.rlegrot  + 10
 
 class Weapon(Layer):
     def __init__(self):
@@ -457,8 +467,8 @@ class Weapon(Layer):
 
     def hitPlayer(self, player):
         pass
-        
-    #self.head   
+
+    #self.head
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
     #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
     #head.friction = 1
