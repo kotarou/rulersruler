@@ -297,6 +297,9 @@ class Worldview(cocos.layer.Layer):
         self.player = Me()
         self.player.addComponents(player_layer)
 
+        self.weapon = Weapon()
+        self.weapon.addComponents(player_layer)
+
         self.bindings = world['bindings']
         buttons = {}
         for k in self.bindings:
@@ -378,26 +381,21 @@ class Worldview(cocos.layer.Layer):
         if rot != 0:
             self.player.rleg.rotation = self.player.rleg.rotation  + 10
 
-    class ruler_weapon():
+class Weapon(Layer):
+    def __init__(self):
+        self.xsize = 16
+        self.ysize = 141
+        self.spritefile = "ruler1p.png"
+        self.currx = 300
+        self.curry = 113
+        self.wsprite = Sprite(self.spritefile)
+        self.wsprite.position = self.currx, self.curry
 
-        def __init__(self, startx, starty):
-            self.xsize = 16
-            self.ysize = 141
-            self.spriteFile = "ruler1p.png"
-            self.currx = startx
-            self.curry = starty
+    def updatepos(xchange, ychange):
+        pass
 
-        def draw(self):
-            pass
-
-        def updatepos(xchange, ychange):
-            pass
-
-        #self.head   = Sprite('Assets/00' + character1 + 'charhead.png')
-        #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
-        #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
-        #head.friction = 1
-        #self.head_attach.position = self.body.position + (0,50)
+    def addComponents(self, layer):
+        layer.add(self.wsprite)
 
 # Useful example code
 
@@ -429,4 +427,3 @@ class Worldview(cocos.layer.Layer):
     #     self.empty_level()
     #     self.level_num += 1
     #     self.level_launch()
-
