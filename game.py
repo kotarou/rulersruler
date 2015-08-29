@@ -16,11 +16,13 @@ import cocos.actions as ac
 from cocos.sprite import Sprite
 from cocos.layer import *
 
+
 current_path = os.getcwd()
 sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
 
 import pymunk as pm
 from pymunk import Vec2d
+
 
 fe = 1.0e-4
 consts = {
@@ -65,6 +67,8 @@ world = {
         }
 }
 
+character1 = character2 = "0"
+
 space = pm.Space()
 space.gravity = Vec2d(0.0, -900.0)
 logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
@@ -92,12 +96,6 @@ batch = pyglet.graphics.Batch()
 #         self.body = eu.Line2(Point2(10,20), Point2(10,40))
 #         self.head = Rect(0,0, 200, 100)
 
-
-
-    # def update_center(self, cshape_center):
-    #     """cshape_center must be eu.Vector2"""
-    #     self.position = world_to_view(cshape_center)
-    #     self.cshape.center = cshape_center
 
 
 class MessageLayer(cocos.layer.Layer):
@@ -140,43 +138,37 @@ def reflection_y(a):
 
 class Me(ac.Move):
     def __init__(self):
-        # self.target = Sprite('Assets/crownrb.png')
-        # self.larm = Sprite('Assets/rectangle.png')
-        # self.larm.position = (-15, -40)
-        # self.larm.anchor = (0,20)
-        # self.larm.rotation = (90)
-        # self.rarm = Sprite('Assets/rectangle.png')
-        # self.rarm.position = (15, -40)
-        # self.rarm.anchor = (0, 20)
-        # self.rarm.rotation = (-90)
-        # self.body = Sprite('Assets/rectangle.png')
-        # self.body.position = (0, -40)
-        # self.body.anchor = (0, 20)
-        # self.lleg = Sprite('Assets/rectangle.png')
-        # self.lleg.position = (-15, -80)
-        # self.lleg.anchor = (0, 20)
-        # self.lleg.rotation = (90)
-        # self.rleg = Sprite('Assets/rectangle.png')
-        # self.rleg.position = (15, -80)
-        # self.rleg.anchor = (0, 20)
-        # self.rleg.rotation = (-90)
+        global character1
+        self.target = Sprite('Assets/crownrb.png')
+        self.head = Sprite('Assets/00' + character1 + 'charhead.png')
+        self.head.position = (0, -30)
+        self.head.anchor = (0, 20)
+        self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
+        self.larm.position = (-15, -80)
+        self.larm.anchor = (0,20)
+        self.larm.rotation = (90)
+        self.rarm = Sprite('Assets/00' + character1 + 'charlarm.png')
+        self.rarm.position = (15, -80)
+        self.rarm.anchor = (0, 20)
+        self.rarm.rotation = (-90)
+        self.body = Sprite('Assets/00' + character1 + 'charbody.png')
+        self.body.position = (0, -80)
+        self.body.anchor = (0, 20)
+        self.lleg = Sprite('Assets/00' + character1 + 'charlleg.png')
+        self.lleg.position = (-15, -120)
+        self.lleg.anchor = (0, 20)
+        self.lleg.rotation = (90)
+        self.rleg = Sprite('Assets/00' + character1 + 'charrleg.png')
+        self.rleg.position = (15, -120)
+        self.rleg.anchor = (0, 20)
+        self.rleg.rotation = (-90)
 
-        # self.target.add(self.larm)
-        # self.target.add(self.rarm)
-        # self.target.add(self.body)
-        # self.target.add(self.lleg)
-        # self.target.add(self.rleg)
-
-        # # Physics setup
-        # self.mass = 5
-        # self.fradius = 4
-        # self.inertia = pm.moment_for_circle(self.mass, 0, self.fradius, (0,0))
-        # self.b = pm.Body(self.mass, self.inertia)
-        # self.b.position = (150,200)
-
-        # # Make out position equal to our physics position
-        # self.target.position = self.b.position
-
+        self.target.add(self.head)
+        self.target.add(self.larm)
+        self.target.add(self.rarm)
+        self.target.add(self.body)
+        self.target.add(self.lleg)
+        self.target.add(self.rleg)
 
         # self.s = pm.Poly(self.b, [(0, -50), (50, 0), (30, 50),(-30, 50),(-50, 0)], (0,-100))
         # space.add(self.s)
@@ -202,26 +194,6 @@ class Me(ac.Move):
     def alignPhys(self):
         self.sprite.set_position(*self.body.position)
 
-    # def step(self, dt):
-    #     super(Me, self).step(dt) # Run step function on the parent class.
-    #     # Determine velocity based on keyboard inputs.
-    #     # velocity_x = 100 * (keyboard[key.RIGHT] - keyboard[key.LEFT])
-    #     # velocity_y = 100 * (keyboard[key.UP] - keyboard[key.DOWN])
-    #     # # Set the object's velocity.
-    #     # self.target.dr = velocity_x * velocity_y
-    #     self.larm.target.dr = 100 * keyboard[key.Q]
-
-class BackgroundLayer(cocos.layer.Layer):
-    """Background layer for all the game."""
-
-    def __init__(self):
-        super(BackgroundLayer, self).__init__()
-        self.sp = Sprite('Assets/background.png')  # creates a sprite from the imagefile in the pathname
-        w, h = director.get_window_size()  # gets the size of the window
-        self.sp.scale = h / self.sp.height  # scales the background image to the size of the window
-        self.sp.position = w//2, h//2  # centers the scaled background iamge
-        self.add(self.sp)  # adds the background image to be rendered
-
 class Worldview(cocos.layer.Layer):
 
     """
@@ -234,22 +206,24 @@ class Worldview(cocos.layer.Layer):
     """
     is_event_handler = True
 
-    def __init__(self, scene):
+    def __init__(self, scene, c1, c2):
         super(Worldview, self).__init__()
 
         global keyboard
         keyboard = key.KeyStateHandler()
         director.window.push_handlers(keyboard)
 
+        # Setup the character sprites
+        global character1
+        character1 = c1
+        character2 = c2
 
         palette = consts['view']['palette']
         #Actor.palette = palette
         #r, g, b = palette['bg']
         #scene.add(cocos.layer.ColorLayer(r, g, b, 255), z=-1)
-        background_layer = BackgroundLayer()
         message_layer = MessageLayer()
         player_layer = Layer()
-        scene.add(background_layer, z=0)
         scene.add(message_layer, z=1)
         scene.add(player_layer,z=2)
         self.fn_show_message = message_layer

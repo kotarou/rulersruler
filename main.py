@@ -27,6 +27,8 @@ import random
 from game import *
 
 rr = random.randrange
+character1 = "0"
+character2 = "0"
 
 class MainMenu(Menu):
 
@@ -61,12 +63,9 @@ class MainMenu(Menu):
         self.create_menu(items)
 
     # Callbacks
+
     def on_new_game(self):
-        scene = cocos.scene.Scene()
-        playview = Worldview(scene)
-        scene.add(playview, z=0)
-        director.push(scene)
-        print("on_new_game()")
+        self.parent.switch_to(4)
 
     def on_scores(self):
         self.parent.switch_to(2)
@@ -77,6 +76,98 @@ class MainMenu(Menu):
     def on_quit(self):
         director.pop()
 
+class LevelMenu(Menu):
+
+    def __init__(self):
+        super(LevelMenu, self).__init__("Levels")
+
+        print("hjhjhj", character1)
+
+        self.font_title['font_name'] = 'You Are Loved'
+        self.font_title['font_size'] = 72
+
+        self.font_item['font_name'] = 'You Are Loved'
+        self.font_item_selected['font_name'] = 'You Are Loved'
+
+        self.menu_valign = CENTER
+        self.menu_halign = CENTER
+
+        items = []
+        items.append(ImageMenuItem('Assets/001backgroundPreview.png', self.on_level_select_1))
+        items.append(ImageMenuItem('Assets/002backgroundPreview.png', self.on_level_select_2))
+        items.append(MenuItem('BACK', self.on_quit))
+        self.create_menu(items)
+
+    def on_level_select_1(self):
+        global character1
+        scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer('Assets/001background.png')
+        scene.add(backgroundLayer, z=1)
+        print("asdf", character1)
+        playview = Worldview(scene, character1, character2)
+        scene.add(playview, z=0)
+        director.push(scene)
+        print("on_new_game()")
+
+    def on_level_select_2(self):
+        global character1
+        print("asdf", character1)
+        scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer('Assets/002background.png')
+        scene.add(backgroundLayer, z=1)
+        playview = Worldview(scene, character1, character2)
+        scene.add(playview, z=0)
+        director.push(scene)
+        print("on_new_game()")
+
+    def on_quit(self):
+        self.parent.switch_to(4)
+
+
+class BackgroundLayer(cocos.layer.Layer):
+    """Background layer for all the game."""
+
+    def __init__(self, backgroundIn):
+        super(BackgroundLayer, self).__init__()
+        self.sp = Sprite(backgroundIn) #creates a sprite from the imagefile in the pathname
+        w, h = director.get_window_size() #gets the size of the window
+        self.sp.scale = h / self.sp.height #scales the background image to the size of the window
+        self.sp.position = w//2, h//2 #centers the scaled background iamge
+        self.add(self.sp) #adds the background image to be rendered
+
+class CharacterMenu(Menu):
+
+    def __init__(self):
+        super(CharacterMenu, self).__init__("Characters")
+
+        self.font_title['font_name'] = 'You Are Loved'
+        self.font_title['font_size'] = 72
+
+        self.font_item['font_name'] = 'You Are Loved'
+        self.font_item_selected['font_name'] = 'You Are Loved'
+
+        self.menu_valign = CENTER
+        self.menu_halign = CENTER
+
+        items = []
+
+        items.append(ImageMenuItem('Assets/001charhead.png', self.on_001char_select))
+        items.append(ImageMenuItem('Assets/002charhead.png', self.on_002char_select))
+        items.append(MenuItem('BACK', self.on_quit))
+        self.create_menu(items)
+
+    def on_001char_select(self):
+        global character1
+        character1 = "1"
+        self.parent.switch_to(3)
+
+    def on_002char_select(self):
+        global character1
+        character1 = "2"
+        self.parent.switch_to(3)
+
+    def on_quit(self):
+        self.parent.switch_to(0)
 
 class OptionMenu(Menu):
 
@@ -135,7 +226,7 @@ def init():
 def start():
     director.set_depth_test()
 
-    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu())
+    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu())
 
     scene = Scene(menulayer)
     return scene

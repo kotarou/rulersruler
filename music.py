@@ -5,7 +5,7 @@
 #
 
 from __future__ import division, print_function, unicode_literals
-
+import os
 MUSIC = True
 SOUND = True
 import time
@@ -114,3 +114,12 @@ def testaud():
     time.sleep(10)
 #play_whack()
 #time.sleep(4)
+
+pyglet.resource.path = ['Assets']
+pyglet.resource.reindex()
+fnm = 'pearknight.mp3'
+
+
+print(os.path.isfile(fnm))
+play(fnm)
+time.sleep(60)
