@@ -73,7 +73,7 @@ world = {
 character1 = character2 = "0"
 
 space = pm.Space()
-space.gravity = Vec2d(0.0, -900.0)
+space.gravity = Vec2d(0.0, -98.1)
 logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
 batch = pyglet.graphics.Batch()
 
@@ -143,47 +143,18 @@ def reflection_y(a):
 class Me(ac.Move):
     def __init__(self, cIn, start, angleIn):
         global character1, character2
-        # self.target = Sprite('Assets/crownrb.png')
-        # self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
-        # self.larm.position = (-15, -80)
-        # self.larm.anchor = (0,20)
-        # self.larm.rotation = (90)
-        # self.rarm = Sprite('Assets/00' + character1 + 'charlarm.png')
-        # self.rarm.position = (15, -80)
-        # self.rarm.anchor = (0, 20)
-        # self.rarm.rotation = (-90)
-        # self.body = Sprite('Assets/00' + character1 + 'charbody.png')
-        # self.body.position = (0, -80)
-        # self.body.anchor = (0, 20)
-        # self.lleg = Sprite('Assets/00' + character1 + 'charlleg.png')
-        # self.lleg.position = (-15, -120)
-        # self.lleg.anchor = (0, 20)
-        # self.lleg.rotation = (90)
-        # self.rleg = Sprite('Assets/00' + character1 + 'charrleg.png')
-        # self.rleg.position = (15, -120)
-        # self.rleg.anchor = (0, 20)
-        # self.rleg.rotation = (-90)
-
-        # self.target.add(self.head)
-        # self.target.add(self.larm)
-        # self.target.add(self.rarm)
-        # self.target.add(self.body)
-        # self.target.add(self.lleg)
-        # self.target.add(self.rleg)
-
-        # self.s = pm.Poly(self.b, [(0, -50), (50, 0), (30, 50),(-30, 50),(-50, 0)], (0,-100))
-        # space.add(self.s)
 
         # The root node's location
         mass = 100
 
-        self.body = pm.Body(mass*3, pm.moment_for_box(mass, 40, 160))  # mass, moment
+        #self.controller = pm.Body()
+
+        self.body = pm.Body(mass, pm.moment_for_box(mass**3, 40, 160))  # mass, moment
         # Somehow size is the other way around.... height width?
-        self.bbody = pm.Poly.create_box(self.body, size=(40, 160))
-        self.body.position = start  #random.randint(20,400), 200
-
-        self.body.angle = 10  # random.random() * math.pi
-
+        self.body.position = start  # random.randint(20,400), 200
+        #self.body.angle = 10  # random.random() * math.pi
+        self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0))
+        #self.bbody = pm.Poly(self.controller, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0))
         # moment = pm.moment_for_box(mass, 20, 30)
         # self.body = pm.Body(mass, moment)
         #
@@ -227,21 +198,6 @@ class Me(ac.Move):
         # rleg.friction = 10
         # self.rleg_attach.position = self.body.position + (20,-60)
 
-        # head_attach
-        # larm_attach
-        # rarm_attach
-        # lleg_attach
-        # rleg_attach
-
-        # body_head = pm.PinJoint(self.body, self.head_attach, (20,60), (20,0))
-        # body_head.distance = 0
-        # body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (20,60))
-        # body_larm.distance = 0
-        # body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,60))
-        # body_rarm.distance = 0
-        # body_lleg = pm.PinJoint(self.body, self.lleg_attach, (0,0), (0,60))
-        # body_lleg.distance = 0
-        # body_rleg = pm.PinJoint(self.body, self.rleg_attach, (40,0), (20,60))
         # body_rleg.distance = 0
         self.torso.rotation = self.body.angle
         self.head.rotation = self.body.angle
@@ -256,12 +212,17 @@ class Me(ac.Move):
         self.rlegrot = 0
 
 
-        space.add(self.body, self.bbody) #, #self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
+        space.add(self.bbody, self.body)
+
+        # , #self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
                   #body_head, body_larm, body_rarm, body_lleg, body_rleg,
                   #head, torso, larm, rarm, lleg, rleg)
 
 
     def alignPhys(self):
+
+
+
         self.torso.set_position(*self.body.position + (20,60))
         self.head.set_position(*self.body.position + (20,120))
         self.larm.set_position(*self.body.position + (0,60))
@@ -275,18 +236,6 @@ class Me(ac.Move):
         self.rarm.rotation = self.body.angle + self.rarmrot
         self.lleg.rotation = self.body.angle + self.llegrot
         self.rleg.rotation = self.body.angle + self.rlegrot
-
-        #self.head.set_position(*self.head_attach.position)
-        #self.larm.set_position(*self.larm_attach.position)
-        #self.rarm.set_position(*self.rarm_attach.position)
-        #self.lleg.set_position(*self.lleg_attach.position)
-        #self.rleg.set_position(*self.rleg_attach.position)
-        # self.torso.set_position(*self.body.position)
-        # self.head.set_position(*self.body.position + (0,55))
-        # self.larm.set_position(*self.body.position + (-40,0))
-        # self.rarm.set_position(*self.body.position + (40,0))
-        # self.lleg.set_position(*self.body.position + (-20,-60))
-        # self.rleg.set_position(*self.body.position + (20,-60))
 
     def addComponents(self, layer):
         layer.add(self.lleg)
@@ -366,6 +315,7 @@ class Worldview(cocos.layer.Layer):
         # for line in static_lines:
         #     line.elasticity = 0.95
         # space.add(static_lines)
+        self.scene = scene
 
     def on_key_press(self, k, m):
         binds = self.bindings
@@ -390,31 +340,25 @@ class Worldview(cocos.layer.Layer):
 
     def update(self, dt):
 
+        pdt = 1.0/60.  # override dt to keep physics simulation stable
+        space.step(pdt)
+
         self.player1.alignPhys()
         self.player2.alignPhys()
-        #self.ruler.alignPhys()
-        #pymunk.pyglet_util.draw(space)
-        # pv1 = body.position + line.a.rotated(body.angle)
-        # pv2 = body.position + line.b.rotated(body.angle)
-        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
-        #     ('v3f', (pv1.x,pv1.y,20,pv2.x,pv2.y,20)),
-        #     ('c3f', (.8,.8,.8)*2)
-        #     )
-        #line = draw.Line((a.left,a.bottom), (a.right,a.bottom), (255,255,255,255))
-        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
-        #     ('v3f', (a.left,a.bottom,120,a.right,a.bottom,120)),
-        #     ('c3f', (.8,.8,.8)*2)
-        #     )
-        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
-        #     ('v3f', (a.left,a.top,120,a.right,a.top,120)),
-        #     ('c3f', (.8,.8,.8)*2)
-        #     )
-        #print(self.player.sprite.position)
+
+        a = self.player1.bbody.cache_bb()
+        try:
+            self.scene.remove("bb")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "bb")
+
 
         # print(self.player.head.position)
         # print(self.player.head_attach.position)
-        pdt = 1.0/60.  # override dt to keep physics simulation stable
-        space.step(pdt)
+
 
         #print(self.player.body.position)
         # update player
@@ -440,16 +384,19 @@ class Worldview(cocos.layer.Layer):
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
             #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
-            self.player1.body.angle = 330
+            self.player1.body.angular_velocity -= 1
+            # self.player1.body.angle = -30
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
             #self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
-            self.player1.body.angle = 30
+            # self.player1.body.angle = 30
+            self.player1.body.angular_velocity += 1
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
+            self.player1.bbody
 
         rot = buttons['p2Up']
         if rot != 0:
@@ -467,7 +414,7 @@ class Worldview(cocos.layer.Layer):
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
             #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
-            self.player2.body.angle = 330
+            self.player2.body.angle = -30
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
         rot = buttons['p2Right']

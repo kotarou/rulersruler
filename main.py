@@ -32,7 +32,10 @@ character2 = "0"
 
 pyglet.resource.path = ['Assets']
 pyglet.resource.reindex()
-
+# Fix strange resource loading bug
+slash_paths = filter(lambda x: x.startswith('/'), pyglet.resource._default_loader._index.keys())
+for path in slash_paths:
+    pyglet.resource._default_loader._index[path[1:]] = pyglet.resource._default_loader._index[path]
 class MainMenu(Menu):
 
     def __init__(self):
