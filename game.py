@@ -2,6 +2,7 @@ from __future__ import division, print_function, unicode_literals
 
 import random
 import math
+import os, sys
 
 import pyglet
 from pyglet.window import key
@@ -15,6 +16,11 @@ import cocos.actions as ac
 from cocos.sprite import Sprite
 from cocos.layer import *
 
+current_path = os.getcwd()
+sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
+
+import pymunk as pm
+from pymunk import Vec2d
 
 fe = 1.0e-4
 consts = {
@@ -58,6 +64,11 @@ world = {
             key.L: 'p2rleg',
         }
 }
+
+space = pm.Space()
+space.gravity = Vec2d(0.0, -900.0)
+logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
+batch = pyglet.graphics.Batch()
 # world to view scales
 
 # class Actor(cocos.sprite.Sprite):
@@ -129,35 +140,67 @@ def reflection_y(a):
 
 class Me(ac.Move):
     def __init__(self):
-        self.target = Sprite('Assets/crownrb.png')
-        self.larm = Sprite('Assets/rectangle.png')
-        self.larm.position = (-15, -40)
-        self.larm.anchor = (0,20)
-        self.larm.rotation = (90)
-        self.rarm = Sprite('Assets/rectangle.png')
-        self.rarm.position = (15, -40)
-        self.rarm.anchor = (0, 20)
-        self.rarm.rotation = (-90)
-        self.body = Sprite('Assets/rectangle.png')
-        self.body.position = (0, -40)
-        self.body.anchor = (0, 20)
-        self.lleg = Sprite('Assets/rectangle.png')
-        self.lleg.position = (-15, -80)
-        self.lleg.anchor = (0, 20)
-        self.lleg.rotation = (90)
-        self.rleg = Sprite('Assets/rectangle.png')
-        self.rleg.position = (15, -80)
-        self.rleg.anchor = (0, 20)
-        self.rleg.rotation = (-90)
+        # self.target = Sprite('Assets/crownrb.png')
+        # self.larm = Sprite('Assets/rectangle.png')
+        # self.larm.position = (-15, -40)
+        # self.larm.anchor = (0,20)
+        # self.larm.rotation = (90)
+        # self.rarm = Sprite('Assets/rectangle.png')
+        # self.rarm.position = (15, -40)
+        # self.rarm.anchor = (0, 20)
+        # self.rarm.rotation = (-90)
+        # self.body = Sprite('Assets/rectangle.png')
+        # self.body.position = (0, -40)
+        # self.body.anchor = (0, 20)
+        # self.lleg = Sprite('Assets/rectangle.png')
+        # self.lleg.position = (-15, -80)
+        # self.lleg.anchor = (0, 20)
+        # self.lleg.rotation = (90)
+        # self.rleg = Sprite('Assets/rectangle.png')
+        # self.rleg.position = (15, -80)
+        # self.rleg.anchor = (0, 20)
+        # self.rleg.rotation = (-90)
 
-        self.target.add(self.larm)
-        self.target.add(self.rarm)
-        self.target.add(self.body)
-        self.target.add(self.lleg)
-        self.target.add(self.rleg)
+        # self.target.add(self.larm)
+        # self.target.add(self.rarm)
+        # self.target.add(self.body)
+        # self.target.add(self.lleg)
+        # self.target.add(self.rleg)
 
-        self.target.position = (100, 100)
-        self.target.velocity = (0, 0)
+        # # Physics setup
+        # self.mass = 5
+        # self.fradius = 4
+        # self.inertia = pm.moment_for_circle(self.mass, 0, self.fradius, (0,0))
+        # self.b = pm.Body(self.mass, self.inertia)
+        # self.b.position = (150,200)
+
+        # # Make out position equal to our physics position
+        # self.target.position = self.b.position
+
+
+        # self.s = pm.Poly(self.b, [(0, -50), (50, 0), (30, 50),(-30, 50),(-50, 0)], (0,-100))
+        # space.add(self.s)
+        self.x = random.randint(20,400)
+        self.y = 500
+        self.angle = random.random() * math.pi
+        self.vs = [(-23,26), (23,26), (0,-26)]
+        self.mass = 10
+        self.moment = pm.moment_for_poly(self.mass, self.vs)
+        self.body = pm.Body(self.mass, self.moment)
+        self.shape = pm.Poly(self.body, self.vs)
+        self.shape.friction = 0.5
+        self.body.position = self.x, self.y
+        self.body.angle = self.angle
+
+        space.add(self.body, self.shape)
+
+        self.sprite = Sprite(logo_img)  # , batch=batch)
+        self.sprite.shape = self.shape
+        self.sprite.body = self.body
+        #logos.append(sprite)
+
+    def alignPhys(self):
+        self.sprite.set_position(*self.body.position)
 
     # def step(self, dt):
     #     super(Me, self).step(dt) # Run step function on the parent class.
@@ -173,11 +216,11 @@ class BackgroundLayer(cocos.layer.Layer):
 
     def __init__(self):
         super(BackgroundLayer, self).__init__()
-        self.sp = Sprite('Assets/background.png') #creates a sprite from the imagefile in the pathname
-        w, h = director.get_window_size() #gets the size of the window
-        self.sp.scale = h / self.sp.height #scales the background image to the size of the window
-        self.sp.position = w//2, h//2 #centers the scaled background iamge
-        self.add(self.sp) #adds the background image to be rendered
+        self.sp = Sprite('Assets/background.png')  # creates a sprite from the imagefile in the pathname
+        w, h = director.get_window_size()  # gets the size of the window
+        self.sp.scale = h / self.sp.height  # scales the background image to the size of the window
+        self.sp.position = w//2, h//2  # centers the scaled background iamge
+        self.add(self.sp)  # adds the background image to be rendered
 
 class Worldview(cocos.layer.Layer):
 
@@ -211,10 +254,9 @@ class Worldview(cocos.layer.Layer):
         scene.add(player_layer,z=2)
         self.fn_show_message = message_layer
 
-        global me
-        me = Me()
+        self.player = Me()
 
-        player_layer.add(me.target)
+        player_layer.add(self.player.sprite)
 
         self.bindings = world['bindings']
         buttons = {}
@@ -222,13 +264,25 @@ class Worldview(cocos.layer.Layer):
             buttons[self.bindings[k]] = 0
         self.buttons = buttons
 
-        ground = Sprite('Assets/ground.png')
-        ground.position = 0, 0
-
         self.schedule(self.update)
-        player_layer.add(ground)
 
+        # Physics stuff
+        # The ground has lines ontop of it
+        static_body = pm.Body()
+        static_lines = [pm.Segment(static_body, (0.0, 50.0), (800.0, 50.0), 0.0)
+                        #,pm.Segment(static_body, (407.0, 246.0), (407.0, 343.0), 0.0)
+                        ]
+        for l in static_lines:
+            l.friction = 0.5
+        space.add(static_lines)
 
+        # static_body = pm.Body()
+        # static_lines = [pm.Segment(static_body, (111.0, 280.0), (407.0, 246.0), 0.0)
+        #                 ,pm.Segment(static_body, (407.0, 246.0), (407.0, 343.0), 0.0)
+        #                 ]
+        # for line in static_lines:
+        #     line.elasticity = 0.95
+        # space.add(static_lines)
 
     def on_key_press(self, k, m):
         binds = self.bindings
@@ -247,19 +301,47 @@ class Worldview(cocos.layer.Layer):
 
     def update(self, dt):
 
+        self.player.alignPhys()
+        #print(self.player.sprite.position)
+
+
+        pdt = 1.0/60. #override dt to keep physics simulation stable
+        space.step(pdt)
+
+
+        # # interactions player - others
+        # for other in self.collman.iter_colliding(me):
+        #     print(other.btype)
+            # typeball = other.btype
+            # if typeball == 'food':
+            #     self.toRemove.add(other)
+            #     self.cnt_food -= 1
+            #     if not self.cnt_food:
+            #         self.open_gate()
+
+            # elif (typeball == 'wall' or
+            #       typeball == 'gate' and self.cnt_food > 0):
+            #     self.level_losed()
+
+            # elif typeball == 'gate':
+            #     self.level_conquered()
+
         # update player
         buttons = self.buttons
 
+        # Check key presses
         rot = buttons['p1larm']
         if rot != 0:
-            me.larm.rotation = me.larm.rotation  + 10
+            self.player.larm.rotation = self.player.larm.rotation  + 10
         rot = buttons['p1rarm']
         if rot != 0:
-            me.rarm.rotation = me.rarm.rotation  + 10
+            self.player.rarm.rotation = self.player.rarm.rotation  + 10
         rot = buttons['p1lleg']
         if rot != 0:
-            me.lleg.rotation = me.lleg.rotation  + 10
+            self.player.lleg.rotation = self.player.lleg.rotation  + 10
         rot = buttons['p1rleg']
         if rot != 0:
-            me.rleg.rotation = me.rleg.rotation  + 10
+            self.player.rleg.rotation = self.player.rleg.rotation  + 10
+
+
 
