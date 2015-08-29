@@ -15,7 +15,7 @@ import cocos.euclid as eu
 import cocos.actions as ac
 from cocos.sprite import Sprite
 from cocos.layer import *
-
+import pymunk.pyglet_util
 
 current_path = os.getcwd()
 sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
@@ -188,26 +188,29 @@ class Me(ac.Move):
         self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
         head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
         head.friction = 1
+        self.head_attach.position = self.body.position + (0,50)
 
         self.larm   = Sprite('Assets/00' + character1 + 'charlarm.png')
         self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         larm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
-        larm.friction = 1
+        self.larm_attach.friction = 1
 
         self.rarm   = Sprite('Assets/00' + character1 + 'charrarm.png')
         self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rarm  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
-        rarm.friction = 1
+        self.rarm_attach.friction = 1
 
         self.lleg   = Sprite('Assets/00' + character1 + 'charlleg.png')
         self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         lleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,60],[0,60]])
         lleg.friction = 1
+        self.lleg_attach.position = self.body.position+ (-20,-60)
 
         self.rleg   = Sprite('Assets/00' + character1 + 'charrleg.png')
         self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rleg  = pm.Poly(self.head_attach, [[0,0],[20,0],[20,-60],[0,-60]])
         rleg.friction = 1
+        self.rleg_attach.position = self.body.position+ (-20,-60)
 
 
         body_head = pm.PinJoint(self.body, self.head_attach, (0,0), (0,0))
@@ -217,7 +220,7 @@ class Me(ac.Move):
         body_rleg = pm.PinJoint(self.body, self.rleg_attach, (0,0), (0,0))
 
         space.add(self.body, self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
-                  #body_head, body_larm, body_rarm, body_lleg, body_rleg,
+                  body_head, body_larm, body_rarm, body_lleg, body_rleg,
                   head, torso, larm, rarm, lleg, rleg)
 
 
@@ -297,14 +300,19 @@ class Me(ac.Move):
         #logos.append(sprite)
 
     def alignPhys(self):
-        self.head.set_position(self.body.position[0], self.body.position[1] + 50)
+        self.head.set_position(*self.head_attach.position)
+        self.torso.set_position(*self.body.position)
+        self.larm.set_position(*self.larm_attach.position)
+        self.rarm.set_position(*self.rarm_attach.position)
+        self.lleg.set_position(*self.lleg_attach.position)
+        self.rleg.set_position(*self.rleg_attach.position)
         #self.sprite.set_position(*self.body.position)
-        self.torso.set_position(self.body.position[0], self.body.position[1])
-        #self.head.set_position(self.headBody.position[0]+self.rootPos[0], self.headBody.position[1]+self.rootPos[1])
-        self.larm.set_position(self.body.position[0]-20, self.body.position[1]+20)
-        self.rarm.set_position(self.body.position[0]+20, self.body.position[1]+20)
-        self.lleg.set_position(self.body.position[0]-12, self.body.position[1]-40)
-        self.rleg.set_position(self.body.position[0]+12, self.body.position[1]-40)
+        # self.torso.set_position(self.body.position[0], self.body.position[1])
+        # #self.head.set_position(self.headBody.position[0]+self.rootPos[0], self.headBody.position[1]+self.rootPos[1])
+        # self.larm.set_position(self.body.position[0]-20, self.body.position[1]+20)
+        # self.rarm.set_position(self.body.position[0]+20, self.body.position[1]+20)
+        # self.lleg.set_position(self.body.position[0]-12, self.body.position[1]-40)
+        # self.rleg.set_position(self.body.position[0]+12, self.body.position[1]-40)
         #self.head.set_position(self.body.position[0], self.body.position[1])
 
     def addComponents(self, layer):
@@ -314,7 +322,7 @@ class Me(ac.Move):
         layer.add(self.rarm)
         layer.add(self.head)
         layer.add(self.torso)
-
+        pass
         # layer.add(self.lleg)
         # layer.add(self.rleg)
 
@@ -366,13 +374,13 @@ class Worldview(cocos.layer.Layer):
         # Physics stuff
         # The ground has lines ontop of it
         static_body = pm.Body()
-        static_lines = [pm.Segment(static_body, (0.0, 50.0), (800.0, 50.0), 0.0),
+        self.static_lines = [pm.Segment(static_body, (0.0, 50.0), (800.0, 50.0), 0.0),
                         pm.Segment(static_body, (0, 0), (0, 400), 0.0),
                         pm.Segment(static_body, (800, 0), (800, 400), 0.0)
                         ]
-        for l in static_lines:
+        for l in self.static_lines:
             l.friction = 0.5
-        space.add(static_lines)
+        space.add(self.static_lines)
 
         # static_body = pm.Body()
         # static_lines = [pm.Segment(static_body, (111.0, 280.0), (407.0, 246.0), 0.0)
@@ -400,6 +408,17 @@ class Worldview(cocos.layer.Layer):
     def update(self, dt):
 
         self.player.alignPhys()
+        #pymunk.pyglet_util.draw(space)
+        # for line in self.static_lines:
+        #     body = line.body
+
+        #     pv1 = body.position + line.a.rotated(body.angle)
+        #     pv2 = body.position + line.b.rotated(body.angle)
+        #     pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+        #         ('v3f', (pv1.x,pv1.y,20,pv2.x,pv2.y,20)),
+        #         ('c3f', (.8,.8,.8)*2)
+        #         )
+
         #print(self.player.sprite.position)
 
 
