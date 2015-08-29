@@ -67,14 +67,14 @@ world = {
             key.RIGHT: 'p2Right',
             key.UP: 'p2Up',
             key.DOWN: 'p2Down',
+            key.Z: 'p1die',
         }
 }
 
 character1 = character2 = "0"
 
 space = pm.Space()
-space.gravity = Vec2d(0.0, -98.1)
-logo_img = pyglet.resource.image('pymunk_logo_googlecode.png')
+space.gravity = Vec2d(0.0, -900.0)
 batch = pyglet.graphics.Batch()
 
 # world to view scales
@@ -263,10 +263,11 @@ class Worldview(cocos.layer.Layer):
         end-of-level conditions.
         Level progression.
     """
-    gamestate = None
     is_event_handler = True
 
-    def __init__(self, scene, c1, c2):
+    def __init__(self, scene, c1, c2, roundmanager):
+        self.roundmanager = roundmanager
+
         super(Worldview, self).__init__()
 
         global keyboard
@@ -293,8 +294,8 @@ class Worldview(cocos.layer.Layer):
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
 
-        self.weapon = Weapon()
-        self.weapon.addComponents(self.player_layer)
+        self.ruler = Ruler()
+        self.ruler.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
         buttons = {}
@@ -352,16 +353,33 @@ class Worldview(cocos.layer.Layer):
 
         self.player1.alignPhys()
         self.player2.alignPhys()
+        self.ruler.alignPhys()
+        a = self.player1.bbody.cache_bb()
+        try:
+            self.scene.remove("aa")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "aa")
 
-        # a = self.player1.bbody.cache_bb()
-        # try:
-        #     self.scene.remove("bb")
-        # except:
-        #     pass
-        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        # bar.position = (a.left,a.bottom)
-        # self.scene.add(bar, 5, "bb")
+        a = self.player2.bbody.cache_bb()
+        try:
+            self.scene.remove("bb")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "bb")
 
+        a = self.ruler.bruler.cache_bb()
+        try:
+            self.scene.remove("bb")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "bb")
 
         # print(self.player.head.position)
         # print(self.player.head_attach.position)
@@ -379,16 +397,19 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Up']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,5000), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(0,2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  + 10
             self.player1.rarmrot = self.player1.rarmrot  + 10
         rot = buttons['p1Down']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  - 10
             self.player1.rarmrot = self.player1.rarmrot  - 10
         rot = buttons['p1Left']
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(-100,0), r=(0, 0))
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
             self.player1.torsor.do(ac.Show())
@@ -398,6 +419,7 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(100,0), r=(0, 0))
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
             self.player1.torso.do(ac.Show())
@@ -408,46 +430,75 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p2Up']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(0,2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  + 10
             self.player2.rarmrot = self.player2.rarmrot  + 10
         rot = buttons['p2Down']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  - 10
             self.player2.rarmrot = self.player2.rarmrot  - 10
         rot = buttons['p2Left']
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(-100,0), r=(0, 0))
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
+            self.player2.torsor.do(ac.Show())
+            self.player2.torso.do(ac.Hide())
+            self.player2.headr.do(ac.Show())
+            self.player2.head.do(ac.Hide())
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(100,0), r=(0, 0))
+            self.ruler.rulerBody.apply_impulse(j=(100,0), r=(0, 0))
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
+            self.player2.torsor.do(ac.Show())
+            self.player2.torso.do(ac.Hide())
+            self.player2.headr.do(ac.Show())
+            self.player2.head.do(ac.Hide())
 
-class Weapon(Layer):
+
+        rot = buttons['p1die']
+        if rot != 0:
+            print(self.roundmanager.gamestate)
+            self.roundmanager.player_win("p1","p2")
+
+class Ruler(ac.Move):
     def __init__(self):
-        self.xsize = 16
-        self.ysize = 141
-        self.spritefile = "ruler1p.png"
-        self.currx = 300
-        self.curry = 113
-        self.wsprite = Sprite(self.spritefile)
-        self.wsprite.position = self.currx, self.curry
+        # self.xsize = 16
+        # self.ysize = 141
+        self.ruler = Sprite("ruler1p.png")
+        # self.currx = 300
+        # self.curry = 113
+        # self.wsprite = Sprite(self.spritefile)
+        # self.wsprite.position = self.currx, self.curry
 
-    def updatepos(xchange, ychange):
-        pass
+        self.rulerBody = pm.Body(80*3, pm.moment_for_box(80, 16, 141))  # mass, moment
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(16, 141))
+        self.rulerBody.position = 325, 151  #random.randint(20,400), 200
+        self.ruler.position = 325, 151
+        space.add(self.rulerBody, self.bruler)
+
+    # def updatepos(xchange, ychange):
+    #     pass
 
     def addComponents(self, layer):
-        layer.add(self.wsprite)
+         layer.add(self.ruler)
 
-    def hitPlayer(self, player):
-        pass
+
+    def alignPhys(self):
+        self.ruler.set_position(*self.rulerBody.position)
+
+        self.ruler.rotation = self.rulerBody.angle
+
+
+
+
+    # def hitPlayer(self, player):
+    #     pass
 
     #self.head
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
