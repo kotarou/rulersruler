@@ -351,7 +351,7 @@ class Worldview(cocos.layer.Layer):
 
         # Physics stuff
         # The ground has lines ontop of it
-        static_body = pm.Body()
+        static_body = pm.Body(1,1)
         self.static_lines = [pm.Segment(static_body, (0.0, 50.0), (800.0, 50.0), 0.0),
                         pm.Segment(static_body, (0, 0), (0, 400), 0.0),
                         pm.Segment(static_body, (800, 0), (800, 400), 0.0)
@@ -393,7 +393,6 @@ class Worldview(cocos.layer.Layer):
 
         self.player1.alignPhys()
         self.player2.alignPhys()
-        #self.ruler.alignPhys()
         #pymunk.pyglet_util.draw(space)
         # pv1 = body.position + line.a.rotated(body.angle)
         # pv2 = body.position + line.b.rotated(body.angle)
@@ -428,26 +427,26 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Up']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  + 10
             self.player1.rarmrot = self.player1.rarmrot  + 10
         rot = buttons['p1Down']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  - 10
             self.player1.rarmrot = self.player1.rarmrot  - 10
         rot = buttons['p1Left']
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
             self.player1.body.angle = 330
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
             self.player1.body.angle = 30
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
@@ -455,26 +454,26 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p2Up']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  + 10
             self.player2.rarmrot = self.player2.rarmrot  + 10
         rot = buttons['p2Down']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  - 10
             self.player2.rarmrot = self.player2.rarmrot  - 10
         rot = buttons['p2Left']
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
             self.player2.body.angle = 330
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
-            #self.ruler.body.apply_impulse(j=(100,0), r=(0, 0))
+            self.ruler.body.apply_impulse(j=(100,0), r=(0, 0))
             self.player2.body.angle = 30
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
@@ -484,24 +483,30 @@ class Worldview(cocos.layer.Layer):
             print(self.roundmanager.gamestate)
             self.roundmanager.player_win("p1","p2")
 
-class Weapon(Layer):
+class Ruler(ac.Move):
     def __init__(self):
-        self.xsize = 16
-        self.ysize = 141
-        self.spritefile = "ruler1p.png"
-        self.currx = 300
-        self.curry = 113
-        self.wsprite = Sprite(self.spritefile)
-        self.wsprite.position = self.currx, self.curry
+        # self.xsize = 16
+        # self.ysize = 141
+        self.ruler = Sprite("ruler1p.png")
+        # self.currx = 300
+        # self.curry = 113
+        # self.wsprite = Sprite(self.spritefile)
+        # self.wsprite.position = self.currx, self.curry
 
-    def updatepos(xchange, ychange):
-        pass
+        self.rulerBody = pm.Body(80*3, pm.moment_for_box(80, 16, 141))  # mass, moment
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(16, 141))
+        self.rulerBody.position = 325, 151  #random.randint(20,400), 200
+        self.ruler.position = 325, 151
+        space.add(self.rulerBody, self.bruler)
+
+    # def updatepos(xchange, ychange):
+    #     pass
 
     def addComponents(self, layer):
-        layer.add(self.wsprite)
+         layer.add(self.ruler)
 
-    def hitPlayer(self, player):
-        pass
+    # def hitPlayer(self, player):
+    #     pass
 
     #self.head
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
