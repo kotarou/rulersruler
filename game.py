@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
 import pymunk as pm
 from pymunk import Vec2d
 
+from pyglet.window import mouse
 
 fe = 1.0e-4
 consts = {
@@ -174,8 +175,9 @@ class Me(ac.Move):
         # The root node's location
         mass = 100
 
-        self.body = pm.Body(mass*3, pm.moment_for_box(mass, 80, 160))  # mass, moment
-        self.bbody = pm.Poly.create_box(self.body, size=(80, 160))
+        self.body = pm.Body(mass*3, pm.moment_for_box(mass, 40, 160))  # mass, moment
+        # Somehow size is the other way around.... height width?
+        self.bbody = pm.Poly.create_box(self.body, size=(40, 160))
         self.body.position = start  #random.randint(20,400), 200
 
         self.body.angle = 10  # random.random() * math.pi
@@ -378,6 +380,12 @@ class Worldview(cocos.layer.Layer):
             return True
         return False
 
+    def on_mouse_press(self, x, y, button, modifiers):
+        if self.player1.bbody.point_query((x, y)):
+            print("Intersect: p1")
+        if self.player2.bbody.point_query((x, y)):
+            print("Intersect: p2")
+
     def update(self, dt):
 
         self.player1.alignPhys()
@@ -405,6 +413,8 @@ class Worldview(cocos.layer.Layer):
         buttons = self.buttons
 
         # Check key presses
+
+        #print(self.player1.bbody.bb)
 
         rot = buttons['p1Up']
         if rot != 0:

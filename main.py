@@ -69,7 +69,7 @@ class MainMenu(Menu):
     # Callbacks
 
     def on_quick_start(self):
-        global character1
+        global character1, character2
         character1 = "1"
         character2 = "2"
         scene = cocos.scene.Scene()
@@ -174,12 +174,14 @@ class CharacterMenu(Menu):
         self.create_menu(items)
 
     def on_001char_select(self):
-        global character1
+        global character1, character2
         character1 = "1"
+        character2 = "2"
         self.parent.switch_to(3)
 
     def on_002char_select(self):
-        global character1
+        global character1, character2
+        character2 = "1"
         character1 = "2"
         self.parent.switch_to(3)
 
