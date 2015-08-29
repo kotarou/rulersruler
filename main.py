@@ -72,14 +72,16 @@ class MainMenu(Menu):
         global character1, character2
         character1 = "1"
         character2 = "2"
-        scene = cocos.scene.Scene()
-        backgroundLayer = BackgroundLayer('001background.png')
-        scene.add(backgroundLayer, z=1)
-        print("asdf", character1)
-        playview = Worldview(scene, character1, character2)
-        scene.add(playview, z=0)
-        director.push(scene)
-        print("on_new_game()")
+        # scene = cocos.scene.Scene()
+        # backgroundLayer = BackgroundLayer('001background.png')
+        # scene.add(backgroundLayer, z=1)
+        # print("asdf", character1)
+        # playview = Worldview(scene, character1, character2)
+        # scene.add(playview, z=0)
+        # director.push(scene)
+        # print("on_new_game()")
+        roundmanager = RoundManager()
+        roundmanager.level_start('002background.png')
 
     def on_new_game(self):
         self.parent.switch_to(4)

@@ -338,8 +338,8 @@ class Worldview(cocos.layer.Layer):
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
 
-        self.weapon = Weapon()
-        self.weapon.addComponents(self.player_layer)
+        self.ruler = Ruler()
+        self.ruler.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
         buttons = {}
