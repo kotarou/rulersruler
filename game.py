@@ -179,7 +179,7 @@ class Me(ac.Move):
 
         self.body = pm.Body(mass*3, pm.moment_for_box(mass, 80, 160))  # mass, moment
         self.bbody = pm.Poly.create_box(self.body, size=(80, 160))
-        self.body.position = 100, 51  #random.randint(20,400), 200
+        self.body.position = 100, 100  #random.randint(20,400), 200
         self.body.angle = 10  # random.random() * math.pi
 
         # moment = pm.moment_for_box(mass, 20, 30)
@@ -429,7 +429,7 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['testL']
         if rot != 0:
             self.player.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.player.body.angle = 330
+            self.player.body.angle = -30
             self.player.llegrot = self.player.llegrot  - 10
             self.player.rlegrot = self.player.rlegrot  - 10
         rot = buttons['testR']
@@ -457,8 +457,8 @@ class Weapon(Layer):
 
     def hitPlayer(self, player):
         pass
-        
-    #self.head   
+
+    #self.head
     #self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
     #head  = pm.Poly(self.head_attach, [[0,0],[40,0],[40,40],[0,40]])
     #head.friction = 1
