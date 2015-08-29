@@ -96,6 +96,8 @@ class LevelMenu(Menu):
 
     def on_level_select(self):
         scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer('Assets/background.png')
+        scene.add(backgroundLayer, z=1)
         playview = Worldview(scene)
         scene.add(playview, z=0)
         director.push(scene)
@@ -103,6 +105,18 @@ class LevelMenu(Menu):
 
     def on_quit(self):
         self.parent.switch_to(4)
+
+
+class BackgroundLayer(cocos.layer.Layer):
+    """Background layer for all the game."""
+
+    def __init__(self, backgroundIn):
+        super(BackgroundLayer, self).__init__()
+        self.sp = Sprite(backgroundIn) #creates a sprite from the imagefile in the pathname
+        w, h = director.get_window_size() #gets the size of the window
+        self.sp.scale = h / self.sp.height #scales the background image to the size of the window
+        self.sp.position = w//2, h//2 #centers the scaled background iamge
+        self.add(self.sp) #adds the background image to be rendered
 
 class CharacterMenu(Menu):
 
