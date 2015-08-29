@@ -173,8 +173,8 @@ class Me(ac.Move):
         # The root node's location
         mass = 100
 
-        self.body = pm.Body(100, pm.moment_for_box(mass, 40, 60))  # mass, moment
-        self.body.position = 100, 200  #random.randint(20,400), 200
+        self.body = pm.Body(mass*3, pm.moment_for_box(mass, 40, 60))  # mass, moment
+        self.body.position = 100, 150  #random.randint(20,400), 200
         self.body.angle = 0  # random.random() * math.pi
 
         # moment = pm.moment_for_box(mass, 20, 30)
@@ -183,49 +183,50 @@ class Me(ac.Move):
 
         self.torso  = Sprite('00' + character1 + 'charbody.png')
         torso  = pm.Poly(self.body, [[0,0],[40,0],[40,60],[0,60]])
-        torso.friction = 1
+        torso.friction = 10
 
         self.head   = Sprite('00' + character1 + 'charhead.png')
         self.head_attach = pm.Body(mass, pm.moment_for_box(mass, 40, 40))
         head  = pm.Poly.create_box(self.head_attach, size=(40, 40), offset=(0,0))
-        head.friction = 1
-        self.head_attach.position = self.body.position + (0,65)
+        head.friction = 10
+        self.head_attach.position = self.body.position + (0,60)  # + (0,65)
 
         self.larm   = Sprite('00' + character1 + 'charlarm.png')
         self.larm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         larm  = pm.Poly.create_box(self.larm_attach, size=(20, 60), offset=(0,0))
-        larm.friction = 1
-        self.larm_attach.position = self.body.position + (-20,40)
+        larm.friction = 10
+        self.larm_attach.position = self.body.position + (-20,0)  # + (-20,40)
 
         self.rarm   = Sprite('00' + character1 + 'charrarm.png')
         self.rarm_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rarm  = pm.Poly.create_box(self.rarm_attach, size=(20, 60), offset=(0,0))
-        rarm.friction = 1
-        self.rarm_attach.position = self.body.position + (40,40)
+        rarm.friction = 10
+        self.rarm_attach.position = self.body.position + (40,0)  # + (40,40)
 
         self.lleg   = Sprite('00' + character1 + 'charlleg.png')
         self.lleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         lleg  = pm.Poly.create_box(self.lleg_attach, size=(20, 60), offset=(0,0))
-        lleg.friction = 1
-        self.lleg_attach.position = self.body.position + (-5,-65)
+        lleg.friction = 10
+        self.lleg_attach.position = self.body.position + (0,-60)  # + (0,-65)
 
         self.rleg   = Sprite('00' + character1 + 'charrleg.png')
         self.rleg_attach = pm.Body(mass, pm.moment_for_box(mass, 20, 60))
         rleg  = pm.Poly.create_box(self.rleg_attach, size=(20, 60), offset=(0,0))
-        rleg.friction = 1
-        self.rleg_attach.position = self.body.position + (15,-65)
+        rleg.friction = 10
+        self.rleg_attach.position = self.body.position + (20,-60)  # + (20,-65)
 
 
         body_head = pm.PinJoint(self.body, self.head_attach, (20,60), (20,0))
-        body_head.distance = 5
+        body_head.distance = 0
         body_larm = pm.PinJoint(self.body, self.larm_attach, (0,60), (20,60))
-        body_larm.distance = 5
+        body_larm.distance = 0
         body_rarm = pm.PinJoint(self.body, self.rarm_attach, (40,60), (0,60))
-        body_rarm.distance = 5
-        body_lleg = pm.PinJoint(self.body, self.lleg_attach, (10,0), (20,60))
-        body_lleg.distance = 5
-        body_rleg = pm.PinJoint(self.body, self.rleg_attach, (30,0), (0,60))
-        body_rleg.distance = 5
+        body_rarm.distance = 0
+        body_lleg = pm.PinJoint(self.body, self.lleg_attach, (0,0), (0,60))
+        body_lleg.distance = 0
+        body_rleg = pm.PinJoint(self.body, self.rleg_attach, (40,0), (20,60))
+        body_rleg.distance = 0
+
 
         space.add(self.body, self.head_attach, self.larm_attach, self.rarm_attach, self.lleg_attach, self.rleg_attach,
                   body_head, body_larm, body_rarm, body_lleg, body_rleg,
@@ -344,27 +345,11 @@ class Worldview(cocos.layer.Layer):
 
         #print(self.player.sprite.position)
 
-
-        pdt = 1.0/60. #override dt to keep physics simulation stable
+        print(self.player.head.position)
+        print(self.player.head_attach.position)
+        pdt = 1.0/60.  # override dt to keep physics simulation stable
         space.step(pdt)
 
-
-        # # interactions player - others
-        # for other in self.collman.iter_colliding(me):
-        #     print(other.btype)
-            # typeball = other.btype
-            # if typeball == 'food':
-            #     self.toRemove.add(other)
-            #     self.cnt_food -= 1
-            #     if not self.cnt_food:
-            #         self.open_gate()
-
-            # elif (typeball == 'wall' or
-            #       typeball == 'gate' and self.cnt_food > 0):
-            #     self.level_losed()
-
-            # elif typeball == 'gate':
-            #     self.level_conquered()
 
         # update player
         buttons = self.buttons
