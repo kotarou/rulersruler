@@ -25,6 +25,8 @@ from pymunk import Vec2d
 
 from pyglet.window import mouse
 
+from cocos.draw import Line
+
 fe = 1.0e-4
 consts = {
     "window": {
@@ -325,18 +327,18 @@ class Worldview(cocos.layer.Layer):
         #r, g, b = palette['bg']
         #scene.add(cocos.layer.ColorLayer(r, g, b, 255), z=-1)
         message_layer = MessageLayer()
-        player_layer = Layer()
+        self.player_layer = Layer()
         scene.add(message_layer, z=2)
-        scene.add(player_layer,z=3)
+        scene.add(self.player_layer,z=3)
         self.fn_show_message = message_layer
 
         self.player1 = Me(c1, (100, 150))
         self.player2 = Me(c2, (500, 150))
-        self.player1.addComponents(player_layer)
-        self.player2.addComponents(player_layer)
+        self.player1.addComponents(self.player_layer)
+        self.player2.addComponents(self.player_layer)
 
         self.weapon = Weapon()
-        self.weapon.addComponents(player_layer)
+        self.weapon.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
         buttons = {}
@@ -391,16 +393,21 @@ class Worldview(cocos.layer.Layer):
         self.player1.alignPhys()
         self.player2.alignPhys()
         #pymunk.pyglet_util.draw(space)
-        # for line in self.static_lines:
-        #     body = line.body
-
-        #     pv1 = body.position + line.a.rotated(body.angle)
-        #     pv2 = body.position + line.b.rotated(body.angle)
-        #     pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
-        #         ('v3f', (pv1.x,pv1.y,20,pv2.x,pv2.y,20)),
-        #         ('c3f', (.8,.8,.8)*2)
-        #         )
-
+        # pv1 = body.position + line.a.rotated(body.angle)
+        # pv2 = body.position + line.b.rotated(body.angle)
+        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+        #     ('v3f', (pv1.x,pv1.y,20,pv2.x,pv2.y,20)),
+        #     ('c3f', (.8,.8,.8)*2)
+        #     )
+        #line = draw.Line((a.left,a.bottom), (a.right,a.bottom), (255,255,255,255))
+        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+        #     ('v3f', (a.left,a.bottom,120,a.right,a.bottom,120)),
+        #     ('c3f', (.8,.8,.8)*2)
+        #     )
+        # pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
+        #     ('v3f', (a.left,a.top,120,a.right,a.top,120)),
+        #     ('c3f', (.8,.8,.8)*2)
+        #     )
         #print(self.player.sprite.position)
 
         # print(self.player.head.position)
