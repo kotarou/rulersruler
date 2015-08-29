@@ -90,13 +90,23 @@ class LevelMenu(Menu):
         self.menu_halign = CENTER
 
         items = []
-        items.append(ImageMenuItem('Assets/001backgroundPreview.png', self.on_level_select))
+        items.append(ImageMenuItem('Assets/001backgroundPreview.png', self.on_level_select_1))
+        items.append(ImageMenuItem('Assets/002backgroundPreview.png', self.on_level_select_2))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
-    def on_level_select(self):
+    def on_level_select_1(self):
         scene = cocos.scene.Scene()
         backgroundLayer = BackgroundLayer('Assets/001background.png')
+        scene.add(backgroundLayer, z=1)
+        playview = Worldview(scene)
+        scene.add(playview, z=0)
+        director.push(scene)
+        print("on_new_game()")
+
+    def on_level_select_2(self):
+        scene = cocos.scene.Scene()
+        backgroundLayer = BackgroundLayer('Assets/002background.png')
         scene.add(backgroundLayer, z=1)
         playview = Worldview(scene)
         scene.add(playview, z=0)
