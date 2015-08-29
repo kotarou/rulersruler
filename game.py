@@ -141,7 +141,7 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self, cIn, start):
+    def __init__(self, cIn, xIn, yIn, angleIn):
         global character1, character2
         # self.target = Sprite('Assets/crownrb.png')
         # self.larm = Sprite('Assets/00' + character1 + 'charrarm.png')
@@ -392,6 +392,7 @@ class Worldview(cocos.layer.Layer):
 
         self.player1.alignPhys()
         self.player2.alignPhys()
+        #self.ruler.alignPhys()
         #pymunk.pyglet_util.draw(space)
         # pv1 = body.position + line.a.rotated(body.angle)
         # pv2 = body.position + line.b.rotated(body.angle)
@@ -426,22 +427,26 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Up']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,5000), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  + 10
             self.player1.rarmrot = self.player1.rarmrot  + 10
         rot = buttons['p1Down']
         if rot != 0:
             self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  - 10
             self.player1.rarmrot = self.player1.rarmrot  - 10
         rot = buttons['p1Left']
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
             self.player1.body.angle = 330
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(1000,0), r=(0, 0))
             self.player1.body.angle = 30
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
@@ -449,22 +454,26 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p2Up']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,5000), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(0,2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  + 10
             self.player2.rarmrot = self.player2.rarmrot  + 10
         rot = buttons['p2Down']
         if rot != 0:
             self.player2.body.apply_impulse(j=(0,-5000), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(0,-2500), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  - 10
             self.player2.rarmrot = self.player2.rarmrot  - 10
         rot = buttons['p2Left']
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.player2.body.angle = -30
+            #self.ruler.body.apply_impulse(j=(-100,0), r=(0, 0))
+            self.player2.body.angle = 330
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
+            #self.ruler.body.apply_impulse(j=(100,0), r=(0, 0))
             self.player2.body.angle = 30
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
