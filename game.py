@@ -522,6 +522,7 @@ class Worldview(cocos.layer.Layer):
             print("Intersect: p2")
 
     def update(self, dt):
+        self.checkforwin()
         global prevKeys
         pdt = 1.0/60.  # override dt to keep physics simulation stable
         space.step(pdt)
