@@ -259,7 +259,8 @@ class Player():
         self.charSprite = char
 
     def lose(self):
-        self.crowns.pop(random.randrange(len(self.crowns)))
+        pass
+        #self.crowns.pop(random.randrange(len(self.crowns)))
 
 class RoundManager():
 

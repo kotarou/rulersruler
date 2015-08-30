@@ -129,6 +129,7 @@ class Me(ac.Move):
     def __init__(self, cIn, start, angleIn, crowns):
         self.crowns = crowns
         self.c = cIn
+        self.batch = cocos.batch.BatchNode()
         # The root node's location
         mass = 100
         self.start = start
@@ -225,9 +226,20 @@ class Me(ac.Move):
                   #head, torso, larm, rarm, lleg, rleg)
 
     def updateCrowns(self):
+        self.batch = cocos.batch.BatchNode()
+        i = 0
         for item in self.crowns:
-            self.spritem = Sprite(item)
-            self.spritem.anchor(0,100)
+            itspr = cocos.sprite.Sprite(item)
+            itspr.position = self.body.position + (0,(50 + (25*i)))
+            batch.add(itspr)
+   
+        #print(self.crowns)
+        #for item in self.crowns:
+        #    self.spritem = Sprite(item)
+        #    self.spritem.do( Place( (120, 330) ))
+        #    print(item)
+        #    print(self.spritem)
+            #self.spritem.anchor(0,100)
 
     def alignPhys(self):
         self.torso.set_position(*self.body.position + (20,60))
@@ -248,6 +260,11 @@ class Me(ac.Move):
         self.lleg.rotation = self.body.angle + self.llegrot
         self.rleg.rotation = self.body.angle + self.rlegrot
 
+        i = 0
+        for item in batch:
+            item.position + (self.body.position, (50 + (25 * i)))
+            i += 1
+
     def addComponents(self, layer):
         layer.add(self.lleg)
         layer.add(self.rleg)
@@ -257,7 +274,9 @@ class Me(ac.Move):
         layer.add(self.torso)
         layer.add(self.headr)
         layer.add(self.torsor)
+        layer.add(self.batch)
         pass
+
 
     def reset(self):
         #self.body.position = self.start
@@ -306,7 +325,6 @@ class Worldview(cocos.layer.Layer):
 
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
-
 
         self.ruler = Ruler(side=0, spawnHeight=random.randint(50, 400), height=10, speed=random.randint(50, 400))
         self.ruler.addComponents(self.player_layer)
