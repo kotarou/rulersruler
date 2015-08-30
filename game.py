@@ -126,8 +126,10 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self, cIn, start, angleIn, crowns):
+    def __init__(self, cIn, start, angleIn, crowns, layer):
+        self.layer = layer
         self.crowns = crowns
+        self.crownObj = []
         self.c = cIn
         self.batch = cocos.batch.BatchNode()
         # The root node's location
@@ -226,13 +228,21 @@ class Me(ac.Move):
                   #head, torso, larm, rarm, lleg, rleg)
 
     def updateCrowns(self):
-        self.batch = cocos.batch.BatchNode()
         i = 0
+        for item in self.crownObj:
+            self.layer.remove(item)
+
+        self.crownObj = []
         for item in self.crowns:
             itspr = cocos.sprite.Sprite(item)
-            itspr.position = self.body.position + (0,(50 + (25*i)))
-            batch.add(itspr)
-   
+            itspr.scale_y = 2
+            itspr.scale_x = 2
+            itspr.position = self.body.position + (20,(120 + (25*i)))
+            self.layer.add(itspr)
+            self.crownObj.append(itspr)
+            i += 1
+
+
         #print(self.crowns)
         #for item in self.crowns:
         #    self.spritem = Sprite(item)
@@ -261,20 +271,20 @@ class Me(ac.Move):
         self.rleg.rotation = self.body.angle + self.rlegrot
 
         i = 0
-        for item in batch:
-            item.position + (self.body.position, (50 + (25 * i)))
+        for item in self.crownObj:
+            item.position = self.body.position + (20,(120 + (25 * i)))
             i += 1
 
     def addComponents(self, layer):
-        layer.add(self.lleg)
-        layer.add(self.rleg)
-        layer.add(self.larm)
-        layer.add(self.rarm)
-        layer.add(self.head)
-        layer.add(self.torso)
-        layer.add(self.headr)
-        layer.add(self.torsor)
-        layer.add(self.batch)
+        self.layer.add(self.lleg)
+        self.layer.add(self.rleg)
+        self.layer.add(self.larm)
+        self.layer.add(self.rarm)
+        self.layer.add(self.head)
+        self.layer.add(self.torso)
+        self.layer.add(self.headr)
+        self.layer.add(self.torsor)
+        self.layer.add(self.batch)
         pass
 
 
@@ -320,8 +330,8 @@ class Worldview(cocos.layer.Layer):
         self.p1Object = player1
         self.p2Object = player2
 
-        self.player1 = Me(self.p1Object.charSprite, (100, 350), 0, player1.crowns)
-        self.player2 = Me(self.p2Object.charSprite, (500, 350), 0, player2.crowns)
+        self.player1 = Me(self.p1Object.charSprite, (100, 350), 0, player1.crowns, self.player_layer)
+        self.player2 = Me(self.p2Object.charSprite, (500, 350), 0, player2.crowns, self.player_layer)
 
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
