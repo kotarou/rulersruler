@@ -14,80 +14,81 @@ pyglet.lib.load_library('avbin')
 pyglet.have_avbin=True
 import pyglet.media.avbin
 have_avbin = True
-
+import random
 #
 # MUSIC
 #
 
-music_player = pyglet.media.Player()
-current_music = None
-
 sound_vol = 0.7
-music_player.volume = 0.4
+volume = 0.4
 
-def set_music(name):
-    print('set music')
-    global current_music
+def makeplayer():
+    return pyglet.media.Player()
 
-    if name == current_music:
-        return
+
+def set_music(name, mplayer):
+    #print(mplayer.playing)
+    #print(mplayer.source)
+    #global current_music
+
+    #if name == current_music:
+    #    return
 
     current_music = name
 
-    if not MUSIC:
-        return
+    #if not MUSIC:
+    #    return
 
-    music_player.next()
-    music_player.queue(pyglet.resource.media(name, streaming=True))
-    music_player.play()
+    #music_player.next()
+    mplayer.next()
+    mplayer.queue(pyglet.resource.media(name, streaming=True))
+    #mplayer.next()
+    #print(mplayer.source)
+    mplayer.play()
     # pyglet bug
-    music_player.volume = music_player.volume
-    music_player.eos_action = 'loop'
+    mplayer.volume = volume
+    mplayer.eos_action = 'loop'
 
 def music_volume(vol):
     music_player.volume=vol
 
 def queue_music(name):
-    print('queue music')
     global current_music
     music_player.queue(pyglet.resource.media(name, streaming=True))
     music_player.eos_action = 'next'
 
 
 def play_music():
-    print('play music')
-    print('play music2')
     if music_player.playing or not current_music:
         return
-    print("play2")
-
     name = current_music
     music_player.next()
     music_player.queue(pyglet.resource.media(name, streaming=True))
     music_player.play()
     music_player.eos_action = 'loop'
 
-@music_player.event
-def on_eos():
-    music_player.eos_action = 'loop'
+# @music_player.event
+# def on_eos():
+#     music_player.eos_action = 'loop'
 
 
-def stop_music():
-    music_player.pause()
+# def stop_music():
+#     print(music_player.playing)
+#     music_player.pause()
+#     print(music_player.playing)
+# #
+# # SOUND
+# #
+# sounds = {}
 
-#
-# SOUND
-#
-sounds = {}
+# def load(name, streaming=False):
+#     if not SOUND:
+#         return
 
-def load(name, streaming=False):
-    if not SOUND:
-        return
+#     if name not in sounds:
+#         sounds[name] = pyglet.resource.media(name, streaming=streaming)
 
-    if name not in sounds:
-        sounds[name] = pyglet.resource.media(name, streaming=streaming)
-
-    return sounds[name]
+#     return sounds[name]
 
 def play(name):
     if not SOUND:
@@ -95,22 +96,31 @@ def play(name):
     load(name)
     a = sounds[name].play().volume = sound_vol
 
-def sound_volume( vol ):
-    global sound_vol
-    sound_vol = vol
+# def sound_volume( vol ):
+#     global sound_vol
+#     sound_vol = vol
 
-def play_whack():
-    play('whack.mp3')
+# def play_whack():
+#     play('whack.mp3')
 
-def testaud():
-    print("foo")
-    #play('tswin.mp3')
-    set_music('tswin.mp3')
-    queue_music('speech.wav')
-    #music_player.play()
-    #play_music()
-    print(music_player.playing)
-    print("done")
-    time.sleep(10)
-#play_whack()
-#time.sleep(4)
+# def testaud():
+#     print("foo")
+#     #play('tswin.mp3')
+#     set_music('tswin.mp3')
+#     queue_music('speech.wav')
+#     #music_player.play()
+#     #play_music()
+#     print(music_player.playing)
+#     print("done")
+#     time.sleep(10)
+
+def queue_random(mplayer):
+    songs = ['citiesoftunnels.mp3',
+    'demoscenessimp.mp3',
+    'tearfulgardens.mp3',
+    'birdsviking.mp3',]
+    a = random.choice(songs)
+    set_music(a, mplayer)
+
+def queue_menu(mplayer):
+    set_music('pearknight.mp3', mplayer)

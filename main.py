@@ -38,6 +38,7 @@ slash_paths = filter(lambda x: x.startswith('/'), pyglet.resource._default_loade
 for path in slash_paths:
     pyglet.resource._default_loader._index[path[1:]] = pyglet.resource._default_loader._index[path]
 
+mplayer = music.makeplayer()
 
 class MainMenu(Menu):
 
@@ -71,6 +72,9 @@ class MainMenu(Menu):
         items.append(MenuItem('Quit', self.on_quit))
 
         self.create_menu(items)
+
+        music.queue_menu(mplayer)
+        #music.play('pearknight.mp3')
 
     # Callbacks
 
@@ -260,13 +264,14 @@ class RoundManager():
         self.gamestate = ""
         self.p1crowns = []
         self.p2crowns = []
+
         
-        music.play('pearknight.mp3')
         
 
     def level_start(self, backgroundPathIn):
 
         self.gamestate = 'round start'
+        music.queue_random(mplayer)
 
         global character1, character2
         scene = cocos.scene.Scene()
@@ -276,11 +281,13 @@ class RoundManager():
         scene.add(playview, z=0)
         director.push(scene)
 
+
     def player_win(self, winner, loser):
         self.genwinmessage(winner, loser)
         self.crown(winner)
         self.gamestate = 'round end'
         self.reset_round()
+        music.queue_random(mplayer)
 
     def genwinmessage(self, winner, loser):
         print("player has won")
