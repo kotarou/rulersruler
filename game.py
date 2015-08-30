@@ -289,6 +289,13 @@ class Me(ac.Move):
             item.position = self.body.position + (20,(crownFloatDistance + (playerCrownVisualSeperation * i)))
             i += 1
 
+        if self.living == 0:
+            self.head.do(ac.Hide())
+            self.headr.do(ac.Hide())
+        if self.living == 1:
+            self.head.do(ac.Show())
+            self.headr.do(ac.Show())
+
     def addComponents(self, layer):
         self.layer.add(self.lleg)
         self.layer.add(self.rleg)
