@@ -114,12 +114,13 @@ class LevelMenu(Menu):
 
         items = []
         items.append(ImageMenuItem('001backgroundPreview.png', self.levelSelect, 1))
-        items.append(ImageMenuItem('002backgroundPreview.png', self.levelSelect, 1))
+        items.append(ImageMenuItem('002backgroundPreview.png', self.levelSelect, 2))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
     def levelSelect(self, level):
         roundmanager = RoundManager()
+        print ('00' + str(level) + 'background.png')
         roundmanager.level_start('00' + str(level) + 'background.png')
 
     def on_quit(self):
