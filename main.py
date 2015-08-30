@@ -260,6 +260,11 @@ class Player():
         "006crown.png",
         "007crown.png",
         "008crown.png",
+        "009crown.png",
+        "010crown.png",
+        "011crown.png",
+        "012crown.png",
+        "013crown.png",
         ]
         return random.choice(opt_crowns)
 
