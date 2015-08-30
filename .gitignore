@@ -1,2 +1,4 @@
 *.pyc
 *.db
+avbin64.dll
+*.dll
