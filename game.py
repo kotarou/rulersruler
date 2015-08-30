@@ -139,7 +139,7 @@ class Me(ac.Move):
         self.body.position = self.start  # random.randint(20,400), 200
         #self.body.angle = 10  # random.random() * math.pi
         #self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0), radius=int(cIn))
-        self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,120],[0,120]], offset=(0,0), radius=int(cIn))
+        self.bbody = pm.Poly(self.body, [[0,10],[35,10],[35,90],[0,90]], offset=(0,0), radius=int(cIn))
         #self.bbody = pm.Poly(self.controller, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0))
         # moment = pm.moment_for_box(mass, 20, 30)
         # self.body = pm.Body(mass, moment)
@@ -199,9 +199,9 @@ class Me(ac.Move):
         self.rleg.rotation = self.body.angle
 
         self.torso.scale = 0.4
-        self.head.scale = 0.4
+        self.head.scale = 0.7
         self.torsor.scale = 0.4
-        self.headr.scale = 0.4
+        self.headr.scale = 0.7
         self.larm.scale = 0.4
         self.rarm.scale = 0.4
         self.lleg.scale = 0.4
@@ -230,14 +230,14 @@ class Me(ac.Move):
             self.spritem.anchor(0,100)
 
     def alignPhys(self):
-        self.torso.set_position(*self.body.position + (20,60))
-        self.head.set_position(*self.body.position + (20,120))
-        self.torsor.set_position(*self.body.position + (20,60))
-        self.headr.set_position(*self.body.position + (20,120))
-        self.larm.set_position(*self.body.position + (0,60))
-        self.rarm.set_position(*self.body.position + (60,60))
-        self.lleg.set_position(*self.body.position + (20,0))
-        self.rleg.set_position(*self.body.position + (40,0))
+        self.torso.set_position(*self.body.position + (20,50))
+        self.head.set_position(*self.body.position + (20,80))
+        self.torsor.set_position(*self.body.position + (20,50))
+        self.headr.set_position(*self.body.position + (20,80))
+        self.larm.set_position(*self.body.position + (0,30))
+        self.rarm.set_position(*self.body.position + (40,30))
+        self.lleg.set_position(*self.body.position + (10,10))
+        self.rleg.set_position(*self.body.position + (30,10))
 
         self.torso.rotation = self.body.angle
         self.head.rotation = self.body.angle
@@ -308,7 +308,7 @@ class Worldview(cocos.layer.Layer):
         self.player2.addComponents(self.player_layer)
 
 
-        self.ruler = Ruler(side=0, spawnHeight=random.randint(50, 400), height=10, speed=random.randint(50, 400))
+        self.ruler = Ruler(side=0, spawnHeight=random.randint(50, 400), width=800, height=10, speed=random.randint(50, 400), layer=self.player_layer)
         self.ruler.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
@@ -461,32 +461,32 @@ class Worldview(cocos.layer.Layer):
         self.player2.alignPhys()
         self.ruler.alignPhys()
 
-        a = self.player1.bbody.cache_bb()
-        try:
-            self.scene.remove("aa")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "aa")
+        # a = self.player1.bbody.cache_bb()
+        # try:
+        #     self.scene.remove("aa")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "aa")
 
-        a = self.player2.bbody.cache_bb()
-        try:
-            self.scene.remove("bb")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "bb")
+        # a = self.player2.bbody.cache_bb()
+        # try:
+        #     self.scene.remove("bb")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "bb")
 
-        a = self.ruler.bruler.cache_bb()
-        try:
-            self.scene.remove("cc")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "cc")
+        # a = self.ruler.bruler.cache_bb()
+        # try:
+        #     self.scene.remove("cc")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "cc")
 
         # print(self.player.head.position)
         # print(self.player.head_attach.position)
@@ -606,7 +606,8 @@ class Worldview(cocos.layer.Layer):
         #self.ruler.rulerBody.apply_force((0.0, 90000.0), self.ruler.rulerBody.position)
 
 class Ruler(ac.Move):
-    def __init__(self, side, spawnHeight, height, speed):
+    def __init__(self, side, spawnHeight, width, height, speed, layer):
+        self.layer = layer
         # self.xsize = 16
         # self.ysize = 141
         self.ruler = Sprite("ruler1p.png")
@@ -616,7 +617,9 @@ class Ruler(ac.Move):
         # self.wsprite.position = self.currx, self.curry
 
         self.rulerBody = pm.Body(100, pm.moment_for_box(1000**5, 800, height))  # mass, moment
-        self.bruler = pm.Poly.create_box(self.rulerBody, size=(600, height), radius=3)
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(width, height), radius=3)
+        #self.ruler.scale_x = width / 800
+        self.ruler.scale_y = height / 16.
         self.rulerBody.position = -400 if side == 0 else 1200, spawnHeight  # random.randint(20,400), 200
         self.ruler.position = self.rulerBody.position
        # self.rulerBody.angle = 90
@@ -628,6 +631,7 @@ class Ruler(ac.Move):
         #self.rulerBody.apply_force((0.0, 90000000.0), self.rulerBody.position)
     def addComponents(self, layer):
          layer.add(self.ruler)
+
 
 
     def alignPhys(self):
@@ -642,15 +646,41 @@ class Ruler(ac.Move):
         space.remove(self.rulerBody)
         space.remove(self.bruler)
         height = random.randint(10, 50)
+        width = random.randint(400, 800)
+        vdir = random.randint(0, 1)
+
         self.rulerBody = pm.Body(100, pm.moment_for_box(1000**5, 800, height))  # mass, moment
-        self.bruler = pm.Poly.create_box(self.rulerBody, size=(600, height), radius=3)
         side = random.randint(0, 1)
+
+        # if vdir > 0:
+        #     a = width
+        #     width = height
+        #     height = a
+        #     self.layer.remove(self.ruler)
+        #     self.ruler = Sprite("ruler.png")
+        #     self.layer.add(self.ruler)
+        #     spawnWidth = random.randint(50, 400)
+        #     speed = random.randint(100, 250)
+        #     self.rulerBody.position = spawnWidth, -399 if side == 0 else 1199  #random.randint(20,400), 200
+        #     self.ruler.position = self.rulerBody.position
+        #     self.rulerBody.velocity = (0, speed if side == 0 else -speed)
+        # else:
+        #self.layer.remove(self.ruler)
+        #self.ruler = Sprite("ruler1p.png")
+        #self.layer.add(self.ruler)
         spawnHeight = random.randint(50, 400)
         speed = random.randint(100, 250)
         self.rulerBody.position = -399 if side == 0 else 1199, spawnHeight  #random.randint(20,400), 200
         self.ruler.position = self.rulerBody.position
         self.rulerBody.velocity = (speed if side == 0 else -speed, 0)
+
+
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(width, height), radius=3)
         space.add(self.rulerBody, self.bruler)
+
+
+        self.ruler.scale_x = width / 800
+        self.ruler.scale_y = height / 16.
 
 # class Ruler(ac.Move):
 #     def __init__(self):
