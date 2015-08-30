@@ -292,13 +292,14 @@ class RoundManager():
         self.genwinmessage(winner)
         self.gamestate = 'round end'
         music.queue_random(mplayer)
+        print(player1.crowns)
+        if (len(player1.crowns) > 5): 
+            director.scene.end()
+        if (len(player2.crowns) > 5):
+            director.scene.end()
 
     def genwinmessage(self, winner):
         print("player " + str(winner) + "has won")
-
-    def crown(self, winner):
-        pass
-        # give winner a crown
 
     def reset_round(self):
         self.playview.restart()
