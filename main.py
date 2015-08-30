@@ -145,7 +145,7 @@ class CharacterMenu(Menu):
 
     def __init__(self, player):
         global player1, player2, player3, player4
-        super(CharacterMenu, self).__init__("Characters")
+        super(CharacterMenu, self).__init__("Player " + str(player))
 
         self.font_title['font_name'] = 'You Are Loved'
         self.font_title['font_size'] = 72
@@ -176,11 +176,13 @@ class CharacterMenu(Menu):
                 self.parent.switch_to(5)
             else:
                 player2.select(str(char))
+                self.parent.switch_to(6)
         if self.player == 3:
             if str(char) == player1.charSprite or str(char) == player2.charSprite:
                 self.parent.switch_to(5)
             else:
                 player3.select(str(char))
+                self.parent.switch_to(7)
         if self.player == 4:
             if str(char) == player1.charSprite or str(char) == player2.charSprite or str(char) == player3.charSprite:
                 self.parent.switch_to(5)
@@ -355,7 +357,7 @@ def init():
 def start():
     director.set_depth_test()
 
-    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu(1), CharacterMenu(2))
+    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu(1), CharacterMenu(2), CharacterMenu(3), CharacterMenu(4))
 
     scene = Scene(menulayer)
     return scene
