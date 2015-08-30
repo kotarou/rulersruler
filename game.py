@@ -85,6 +85,9 @@ upDirectionMult = 10
 wallImpactForce = 200 #4500
 playerImpactForceMult = 300
 
+playerCrownScale = 1.5
+playerCrownVisualSeperation = 20
+crownFloatDistance = 110
 
 class MessageLayer(cocos.layer.Layer):
 
@@ -234,13 +237,13 @@ class Me(ac.Move):
         self.crownObj = []
         for item in self.crowns:
             itspr = cocos.sprite.Sprite(item)
-            itspr.scale_y = 2
-            itspr.scale_x = 2
-            itspr.position = self.body.position + (20,(120 + (25*i)))
+            itspr.scale_y = playerCrownScale
+            itspr.scale_x = playerCrownScale
+            itspr.position = self.body.position + (20,(crownFloatDistance + (playerCrownVisualSeperation*i)))
             self.layer.add(itspr)
             self.crownObj.append(itspr)
             i += 1
-        self.bbody.unsafe_set_vertices([[0,10],[35,10],[35,90+(i*25)],[0,90+(i*25)]])
+        self.bbody.unsafe_set_vertices([[0,10],[35,10],[35,90+(i*playerCrownVisualSeperation)],[0,90+(i*playerCrownVisualSeperation)]])
 
         #print(self.crowns)
         #for item in self.crowns:
@@ -271,7 +274,7 @@ class Me(ac.Move):
 
         i = 0
         for item in self.crownObj:
-            item.position = self.body.position + (20,(120 + (25 * i)))
+            item.position = self.body.position + (20,(crownFloatDistance + (playerCrownVisualSeperation * i)))
             i += 1
 
     def addComponents(self, layer):
@@ -335,11 +338,11 @@ class Worldview(cocos.layer.Layer):
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
 
+        self.rulers = []
+        r = Ruler(side=0, spawnHeight=random.randint(50, 400), width=800, height=10, speed=random.randint(50, 400), layer=self.player_layer)
+        r.addComponents(self.player_layer)
+        self.rulers.append(r)
 
-        self.ruler = Ruler(side=0, spawnHeight=random.randint(50, 400), width=800, height=10, speed=random.randint(50, 400), layer=self.player_layer)
-
-
-        self.ruler.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
         buttons = {}
@@ -372,9 +375,11 @@ class Worldview(cocos.layer.Layer):
         #     line.elasticity = 0.95
         # space.add(static_lines)
         self.scene = scene
+        self.numS = 0
 
     def restart(self):
-        self.ruler.replace()
+        for r in self.rulers:
+            r.replace()
         self.player1.reset()
         self.player2.reset()
         #time.sleep(3)
@@ -486,10 +491,23 @@ class Worldview(cocos.layer.Layer):
         global prevKeys
         pdt = 1.0/60.  # override dt to keep physics simulation stable
         space.step(pdt)
+        self.numS += 1
+        # if self.numS > 7*60:
+        #     r = Ruler(side=0, spawnHeight=random.randint(50, 400), width=800, height=10, speed=random.randint(50, 400), layer=self.player_layer)
+        #     r.addComponents(self.player_layer)
+        #     self.rulers.append(r)
+        if self.numS > 10*60:
+            self.numS = 0
+            r = Ruler(side=0, spawnHeight=random.randint(50, 400), width=800, height=10, speed=random.randint(50, 400), layer=self.player_layer)
+            r.addComponents(self.player_layer)
+            self.rulers.append(r)
 
         self.player1.alignPhys()
         self.player2.alignPhys()
-        self.ruler.alignPhys()
+        for r in self.rulers:
+            r.alignPhys()
+
+
 
         # a = self.player1.bbody.cache_bb()
         # try:
