@@ -21,6 +21,7 @@ import random
 
 sound_vol = 0.7
 volume = 0.4
+sounds = {}
 
 def makeplayer():
     return pyglet.media.Player()
@@ -81,27 +82,25 @@ def play_music():
 # #
 # sounds = {}
 
-# def load(name, streaming=False):
-#     if not SOUND:
-#         return
+def load(name, streaming=False):
+    if not SOUND:
+        return
 
-#     if name not in sounds:
-#         sounds[name] = pyglet.resource.media(name, streaming=streaming)
+    if name not in sounds:
+        sounds[name] = pyglet.resource.media(name, streaming=streaming)
 
-#     return sounds[name]
+    return sounds[name]
 
-# def play(name):
-#     if not SOUND:
-#         return
-#     load(name)
-#     a = sounds[name].play().volume = sound_vol
+def play(name):
+    load(name)
+    a = sounds[name].play().volume = sound_vol
 
 # def sound_volume( vol ):
 #     global sound_vol
 #     sound_vol = vol
 
-# def play_whack():
-#     play('whack.mp3')
+def play_whack():
+    play('whack.mp3')
 
 # def testaud():
 #     print("foo")

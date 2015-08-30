@@ -113,7 +113,7 @@ class MessageLayer(cocos.layer.Layer):
         w, h = director.get_window_size()
 
         self.msg = cocos.text.Label(msg,
-                                    font_size=52,
+                                    font_size=16,
                                     font_name=consts['view']['font_name'],
                                     anchor_y='center',
                                     anchor_x='center')
@@ -429,6 +429,18 @@ class Worldview(cocos.layer.Layer):
             return True
         return False
 
+    def gendeathmessage(self, loser):
+        deathmessages = [
+                        (loser + ' was ruled out!'),
+                        (loser + ' was overruled!'),
+                        (loser + ' became ineligible for rulership.'),
+                        (loser + ' was ruled unworthy!'),
+                        (loser + ' was a line gauge after all.'),
+                        (loser + ' was bent out of shape.'),
+                        (loser + ' performed like a felxi on a heater. Limply'),
+        ]
+        self.fn_show_message(random.choice(deathmessages))
+
     def collide(self, a, arb):
         #print(arb.shapes)
         obj1 = arb.shapes[0]
@@ -438,32 +450,36 @@ class Worldview(cocos.layer.Layer):
         if 1 in [obj1.radius, obj2.radius] and 10 in [obj1.radius, obj2.radius]:
             if self.player1.living != 1:
                 return False
+            music.play_whack()
             if not self.checkforwin():
-                self.fn_show_message("Player 1 died!")
+                self.gendeathmessage("Player 1")
             self.player1.living = 0
 
             return False
         elif 2 in [obj1.radius, obj2.radius] and 10 in [obj1.radius, obj2.radius]:
             if self.player2.living != 1:
                 return False
+            music.play_whack()
             if not self.checkforwin():
-                self.fn_show_message("Player 2 died!")
+                self.gendeathmessage("Player 2")
             self.player2.living = 0
 
             return False
         elif 3 in [obj1.radius, obj2.radius] and 10 in [obj1.radius, obj2.radius]:
             if self.player3.living != 1:
                 return False
+            music.play_whack()
             if not self.checkforwin():
-                self.fn_show_message("Player 3 died!")
+                self.gendeathmessage("Player 3")
             self.player3.living = 0
 
             return False
         elif 4 in [obj1.radius, obj2.radius] and 10 in [obj1.radius, obj2.radius]:
             if self.player4.living != 1:
                 return False
+            music.play_whack()
             if not self.checkforwin():
-                self.fn_show_message("Player 4 died!")
+                self.gendeathmessage("Player 4")
             self.player4.living = 0
             return False
 

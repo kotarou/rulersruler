@@ -338,9 +338,8 @@ class RoundManager():
         if (len(player4.crowns) > 5):
             director.scene.end()
 
-
     def genwinmessage(self, winner):
-        print("player " + str(winner) + "has won")
+        pass
 
     def reset_round(self):
         self.playview.restart()
