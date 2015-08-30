@@ -22,6 +22,7 @@ from cocos.layer import *
 from cocos.actions import *
 from cocos.sprite import Sprite
 
+import music
 import random
 
 from game import *
@@ -242,6 +243,9 @@ class RoundManager():
 
     def __init__(self):
         self.gamestate = ""
+
+        music.play('pearknight.mp3')
+
 
     def level_start(self, backgroundPathIn):
         global player1, player2

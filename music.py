@@ -10,10 +10,10 @@ MUSIC = True
 SOUND = True
 import time
 import pyglet
+pyglet.lib.load_library('avbin')
+pyglet.have_avbin=True
 import pyglet.media.avbin
 have_avbin = True
-MUSIC = True
-SOUND = True
 
 #
 # MUSIC
@@ -114,11 +114,3 @@ def testaud():
     time.sleep(10)
 #play_whack()
 #time.sleep(4)
-
-
-fnm = 'pearknight.mp3'
-
-
-print(os.path.isfile(fnm))
-play(fnm)
-time.sleep(60)

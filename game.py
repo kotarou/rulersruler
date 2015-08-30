@@ -282,9 +282,10 @@ class Worldview(cocos.layer.Layer):
         # Physics stuff
         # The ground has lines ontop of it
         static_body = pm.Body()
-        self.static_lines = [pm.Segment(static_body, (0.0, 50.0), (800.0, 50.0), 0.0),
-                        pm.Segment(static_body, (0, 0), (0, 400), 0.0),
-                        pm.Segment(static_body, (800, 0), (800, 400), 0.0)
+        self.static_lines = [pm.Segment(static_body, (0.0, 50.0), (600.0, 50.0), 0.0),
+                        pm.Segment(static_body, (0, 0), (0, 500.0), 0.0),
+                        pm.Segment(static_body, (600.0, 0), (600.0, 500.0), 0.0),
+                        pm.Segment(static_body, (0, 500.0), (600.0, 500.0), 0.0)
                         ]
         for l in self.static_lines:
             l.friction = 30
@@ -466,7 +467,7 @@ class Ruler(ac.Move):
         # self.wsprite = Sprite(self.spritefile)
         # self.wsprite.position = self.currx, self.curry
 
-        self.rulerBody = pm.Body(80*3, pm.moment_for_box(80, 16, 141))  # mass, moment
+        self.rulerBody = pm.Body(16*3, pm.moment_for_box(16, 16, 141))  # mass, moment
         self.bruler = pm.Poly.create_box(self.rulerBody, size=(16, 141))
         self.rulerBody.position = 325, 151  #random.randint(20,400), 200
         self.ruler.position = 325, 151
