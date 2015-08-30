@@ -67,7 +67,6 @@ world = {
             key.RIGHT: 'p2Right',
             key.UP: 'p2Up',
             key.DOWN: 'p2Down',
-            key.Z: 'p1die',
         }
 }
 
@@ -629,10 +628,7 @@ class Worldview(cocos.layer.Layer):
             self.player2.headr.do(ac.Hide())
 
         prevKeys = buttons
-        rot = buttons['p1die']
-        if rot != 0:
-            print(self.roundmanager.gamestate)
-            self.roundmanager.player_win(1)
+
 
         #self.ruler.rulerBody.apply_force((0.0, 90000.0), self.ruler.rulerBody.position)
 
