@@ -120,7 +120,6 @@ class LevelMenu(Menu):
 
     def levelSelect(self, level):
         roundmanager = RoundManager()
-        print ('00' + str(level) + 'background.png')
         roundmanager.level_start('00' + str(level) + 'background.png')
 
     def on_quit(self):
@@ -261,7 +260,7 @@ class Player():
 
     def lose(self):
         self.crowns.pop(random.randrange(len(self.crowns)))
-        
+
 class RoundManager():
 
     def __init__(self):
