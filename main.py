@@ -27,8 +27,6 @@ import random
 from game import *
 
 rr = random.randrange
-character1 = "0"
-character2 = "0"
 
 pyglet.resource.path = ['Assets']
 pyglet.resource.reindex()
@@ -41,9 +39,12 @@ for path in slash_paths:
 class MainMenu(Menu):
 
     def __init__(self):
-
+        global player1, player2
         # call superclass with the title
         super(MainMenu, self).__init__("Ruler's Ruler")
+
+        player1 = Player('0', [], 0)
+        player2 = Player('0', [], 1)
 
         pyglet.font.add_directory('.')
 
@@ -74,17 +75,9 @@ class MainMenu(Menu):
     # Callbacks
 
     def on_quick_start(self):
-        global character1, character2
-        character1 = "1"
-        character2 = "2"
-        # scene = cocos.scene.Scene()
-        # backgroundLayer = BackgroundLayer('001background.png')
-        # scene.add(backgroundLayer, z=1)
-        # print("asdf", character1)
-        # playview = Worldview(scene, character1, character2)
-        # scene.add(playview, z=0)
-        # director.push(scene)
-        # print("on_new_game()")
+        global player1, player1
+        player1.select("1")
+        player2.select("2")
         roundmanager = RoundManager()
         roundmanager.level_start('002background.png')
 
@@ -105,8 +98,6 @@ class LevelMenu(Menu):
     def __init__(self):
         super(LevelMenu, self).__init__("Levels")
 
-        print("hjhjhj", character1)
-
         self.font_title['font_name'] = 'You Are Loved'
         self.font_title['font_size'] = 72
 
@@ -117,38 +108,14 @@ class LevelMenu(Menu):
         self.menu_halign = CENTER
 
         items = []
-        items.append(ImageMenuItem('001backgroundPreview.png', self.on_level_select_1))
-        items.append(ImageMenuItem('002backgroundPreview.png', self.on_level_select_2))
+        items.append(ImageMenuItem('001backgroundPreview.png', self.levelSelect, 1))
+        items.append(ImageMenuItem('002backgroundPreview.png', self.levelSelect, 1))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
-    def on_level_select_1(self):
-        global character1
-        scene = cocos.scene.Scene()
-        backgroundLayer = BackgroundLayer('001background.png')
-        scene.add(backgroundLayer, z=1)
-        print("asdf", character1, character2)
-        playview = Worldview(scene, character1, character2)
-        scene.add(playview, z=0)
-        director.push(scene)
-        print("on_new_game()")
-
-    def on_level_select_2(self):
-        # scene = cocos.scene.Scene()
-        # backgroundLayer = BackgroundLayer('002background.png')
-        # scene.add(backgroundLayer, z=1)
+    def levelSelect(self, level):
         roundmanager = RoundManager()
-        roundmanager.level_start('002background.png')
-
-        # global character1
-        # print("asdf", character1)
-        # scene = cocos.scene.Scene()
-        # backgroundLayer = BackgroundLayer('002background.png')
-        # scene.add(backgroundLayer, z=1)
-        # playview = Worldview(scene, character1, character2)
-        # scene.add(playview, z=0)
-        # director.push(scene)
-        # print("on_new_game()")
+        roundmanager.level_start('00' + str(level) + 'background.png')
 
     def on_quit(self):
         self.parent.switch_to(4)
@@ -159,15 +126,16 @@ class BackgroundLayer(cocos.layer.Layer):
 
     def __init__(self, backgroundIn):
         super(BackgroundLayer, self).__init__()
-        self.sp = Sprite(backgroundIn) #creates a sprite from the imagefile in the pathname
-        w, h = director.get_window_size() #gets the size of the window
-        self.sp.scale = h / self.sp.height #scales the background image to the size of the window
-        self.sp.position = w//2, h//2 #centers the scaled background iamge
-        self.add(self.sp) #adds the background image to be rendered
+        self.sp = Sprite(backgroundIn)  # creates a sprite from the imagefile in the pathname
+        w, h = director.get_window_size()  # gets the size of the window
+        self.sp.scale = h / self.sp.height  # scales the background image to the size of the window
+        self.sp.position = w//2, h//2  # centers the scaled background iamge
+        self.add(self.sp)  # adds the background image to be rendered
 
 class CharacterMenu(Menu):
 
-    def __init__(self):
+    def __init__(self, player):
+        global player1, player2
         super(CharacterMenu, self).__init__("Characters")
 
         self.font_title['font_name'] = 'You Are Loved'
@@ -179,26 +147,27 @@ class CharacterMenu(Menu):
         self.menu_valign = CENTER
         self.menu_halign = CENTER
 
-        items = []
+        self.items = []
+        self.player = player
 
-        items.append(ImageMenuItem('001charhead.png', self.on_001char_select))
-        items.append(ImageMenuItem('002charhead.png', self.on_002char_select))
-        items.append(MenuItem('BACK', self.on_quit))
-        self.create_menu(items)
+        self.items.append(ImageMenuItem('001charhead.png', self.charSelect, 1))
+        self.items.append(ImageMenuItem('002charhead.png', self.charSelect, 2))
+        self.items.append(MenuItem('BACK', self.on_quit))
+        self.create_menu(self.items)
 
-    def on_001char_select(self):
-        global character1
-        global character2
-        character1 = "1"
-        character2 = "2"
-        self.parent.switch_to(3)
+    def charSelect(self, char):
+        global player1, player2
+        if self.player == 1:
+            player1.select(str(char))
+            self.parent.switch_to(5)
+        if self.player == 2:
+            if str(char) == player1.charSprite:
+                self.parent.switch_to(5)
+            else:
+                player2.select(str(char))
+                self.parent.switch_to(3)
 
-    def on_002char_select(self):
-        global character1
-        global character2
-        character1 = "2"
-        character2 = "1"
-        self.parent.switch_to(3)
+
 
     def on_quit(self):
         self.parent.switch_to(0)
@@ -252,23 +221,36 @@ class ScoreMenu(Menu):
     def on_quit(self):
         self.parent.switch_to(0)
 
+class Player():
+    def __init__(self, charSprite, crowns, side):
+        self.charSprite = charSprite
+        self.crowns = crowns
+        self.wins = len(crowns)
+        self.side = side
+
+    def update(self):
+        self.wins = len(self.crowns)
+
+    def win(self):
+        self.crowns.append['crownrb.png']
+        self.update()
+
+    def select(self, char):
+        self.charSprite = char
 
 class RoundManager():
 
     def __init__(self):
         self.gamestate = ""
-        self.p1crowns = []
-        self.p2crowns = []
 
     def level_start(self, backgroundPathIn):
-
+        global player1, player2
         self.gamestate = 'round start'
 
-        global character1, character2
         scene = cocos.scene.Scene()
         backgroundLayer = BackgroundLayer(backgroundPathIn)
         scene.add(backgroundLayer, z=1)
-        playview = Worldview(scene, character1, character2, self)
+        playview = Worldview(scene, player1, player2, self)
         scene.add(playview, z=0)
         director.push(scene)
 
@@ -299,7 +281,7 @@ def init():
 def start():
     director.set_depth_test()
 
-    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu())
+    menulayer = MultiplexLayer(MainMenu(), OptionMenu(), ScoreMenu(), LevelMenu(), CharacterMenu(1), CharacterMenu(2))
 
     scene = Scene(menulayer)
     return scene

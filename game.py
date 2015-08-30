@@ -71,36 +71,9 @@ world = {
         }
 }
 
-character1 = character2 = "0"
-
 space = pm.Space()
 space.gravity = Vec2d(0.0, -900.0)
 batch = pyglet.graphics.Batch()
-
-# world to view scales
-
-# class Actor(cocos.sprite.Sprite):
-#     palette = {}  # injected later
-
-#     def __init__(self, cx, cy, radius, btype, img, vel=None):
-#         super(Actor, self).__init__(img)
-#         # the 1.05 so that visual radius a bit greater than collision radius
-#         # self.scale = (radius * 1.05) * scale_x / (self.image.width / 2.0)
-#         # self.btype = btype
-#         # self.color = self.palette[btype]
-#         # self.cshape = cm.CircleShape(eu.Vector2(cx, cy), radius)
-#         self.update_center(self.cshape.center)
-#         if vel is None:
-#             vel = eu.Vector2(0.0, 0.0)
-#         self.vel = vel
-#         self.larm = eu.Line2(Point2(0,20),Point2(10,40))
-#         self.rarm = eu.Line2(Point2(20,20),Point2(10,40))
-#         self.lleg = eu.Line2(Point2(10,20), Point2(0,0))
-#         self.rleg = eu.Line2(Point2(10,20), Point2(20,0))
-#         self.body = eu.Line2(Point2(10,20), Point2(10,40))
-#         self.head = Rect(0,0, 200, 100)
-
-
 
 class MessageLayer(cocos.layer.Layer):
 
@@ -142,7 +115,6 @@ def reflection_y(a):
 
 class Me(ac.Move):
     def __init__(self, cIn, start, angleIn):
-        global character1, character2
         self.c = cIn
         # The root node's location
         mass = 100
@@ -265,7 +237,7 @@ class Worldview(cocos.layer.Layer):
     """
     is_event_handler = True
 
-    def __init__(self, scene, c1, c2, roundmanager):
+    def __init__(self, scene, player1, player2, roundmanager):
         self.roundmanager = roundmanager
         global prevKeys
         prevKeys = []
@@ -274,11 +246,6 @@ class Worldview(cocos.layer.Layer):
         global keyboard
         keyboard = key.KeyStateHandler()
         director.window.push_handlers(keyboard)
-
-        # Setup the character sprites
-        global character1
-        character1 = c1
-        character2 = c2
 
         palette = consts['view']['palette']
         #Actor.palette = palette
@@ -290,10 +257,16 @@ class Worldview(cocos.layer.Layer):
         scene.add(self.player_layer,z=3)
         self.fn_show_message = message_layer
 
-        self.player1 = Me(c1, (100, 150), 0)
-        self.player2 = Me(c2, (500, 150), 0)
+        # Setup the character sprites
+        self.p1Object = player1
+        self.p2Object = player2
+
+        self.player1 = Me(self.p1Object.charSprite, (100, 150), 0)
+        self.player2 = Me(self.p2Object.charSprite, (500, 150), 0)
+
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
+
 
         self.ruler = Ruler()
         self.ruler.addComponents(self.player_layer)
@@ -356,32 +329,32 @@ class Worldview(cocos.layer.Layer):
         self.player2.alignPhys()
         self.ruler.alignPhys()
 
-        a = self.player1.bbody.cache_bb()
-        try:
-            self.scene.remove("aa")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "aa")
+        # a = self.player1.bbody.cache_bb()
+        # try:
+        #     self.scene.remove("aa")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "aa")
 
-        a = self.player2.bbody.cache_bb()
-        try:
-            self.scene.remove("bb")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "bb")
+        # a = self.player2.bbody.cache_bb()
+        # try:
+        #     self.scene.remove("bb")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "bb")
 
         a = self.ruler.bruler.cache_bb()
-        try:
-            self.scene.remove("bb")
-        except:
-            pass
-        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        bar.position = (a.left,a.bottom)
-        self.scene.add(bar, 5, "bb")
+        # try:
+        #     self.scene.remove("bb")
+        # except:
+        #     pass
+        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        # bar.position = (a.left,a.bottom)
+        # self.scene.add(bar, 5, "bb")
 
         # cheeky fast assumption
         if self.player1.bbody.point_query((a.left, a.bottom)) or self.player1.bbody.point_query((a.left, a.top)) or self.player1.bbody.point_query((a.right, a.bottom)) or self.player1.bbody.point_query((a.right, a.top)):
