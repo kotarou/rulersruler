@@ -41,13 +41,14 @@ mplayer = music.makeplayer()
 class MainMenu(Menu):
 
     def __init__(self):
-        global player1, player2
+        global player1, player2, player3, player4
         # call superclass with the title
         super(MainMenu, self).__init__("Ruler's Ruler")
 
         player1 = Player('0', [], 0)
         player2 = Player('0', [], 1)
-
+        player3 = Player('0', [], 2)
+        player4 = Player('0', [], 3)
         pyglet.font.add_directory('.')
 
         # you can override the font that will be used for the title and the items
@@ -80,9 +81,11 @@ class MainMenu(Menu):
     # Callbacks
 
     def on_quick_start(self):
-        global player1, player1
+        global player1, player2, player3, player4
         player1.select("1")
         player2.select("2")
+        player3.select("3")
+        player4.select("4")
         roundmanager = RoundManager()
         roundmanager.level_start('002background.png')
 
@@ -141,7 +144,7 @@ class BackgroundLayer(cocos.layer.Layer):
 class CharacterMenu(Menu):
 
     def __init__(self, player):
-        global player1, player2
+        global player1, player2, player3, player4
         super(CharacterMenu, self).__init__("Characters")
 
         self.font_title['font_name'] = 'You Are Loved'
@@ -164,7 +167,7 @@ class CharacterMenu(Menu):
         self.create_menu(self.items)
 
     def charSelect(self, char):
-        global player1, player2
+        global player1, player2, player3, player4
         if self.player == 1:
             player1.select(str(char))
             self.parent.switch_to(5)
@@ -173,8 +176,17 @@ class CharacterMenu(Menu):
                 self.parent.switch_to(5)
             else:
                 player2.select(str(char))
+        if self.player == 3:
+            if str(char) == player1.charSprite or str(char) == player2.charSprite:
+                self.parent.switch_to(5)
+            else:
+                player3.select(str(char))
+        if self.player == 4:
+            if str(char) == player1.charSprite or str(char) == player2.charSprite or str(char) == player3.charSprite:
+                self.parent.switch_to(5)
+            else:
+                player4.select(str(char))
                 self.parent.switch_to(3)
-
 
 
     def on_quit(self):
@@ -279,7 +291,7 @@ class RoundManager():
 
 
     def level_start(self, backgroundPathIn):
-        global player1, player2
+        global player1, player2, player3, player4
         self.gamestate = 'round start'
 
         self.backgroundPathIn = backgroundPathIn
@@ -288,7 +300,7 @@ class RoundManager():
         scene = cocos.scene.Scene()
         backgroundLayer = BackgroundLayer(backgroundPathIn)
         scene.add(backgroundLayer, z=1)
-        self.playview = Worldview(scene, player1, player2, self)
+        self.playview = Worldview(scene, player1, player2, player3, player4, self)
         scene.add(self.playview, z=0)
         director.push(scene)
 
@@ -296,17 +308,36 @@ class RoundManager():
         if winner == 1:
             player1.win()
             player2.lose()
+            player3.lose()
+            player4.lose()
         if winner == 2:
             player2.win()
             player1.lose()
+            player3.lose()
+            player4.lose()
+        if winner == 3:
+            player3.win()
+            player1.lose()
+            player2.lose()
+            player4.lose()
+        if winner == 4:
+            player4.win()
+            player1.lose()
+            player2.lose()
+            player3.lose()
         self.genwinmessage(winner)
         self.gamestate = 'round end'
         music.queue_random(mplayer)
         print(player1.crowns)
-        if (len(player1.crowns) > 5): 
+        if (len(player1.crowns) > 5):
             director.scene.end()
         if (len(player2.crowns) > 5):
             director.scene.end()
+        if (len(player3.crowns) > 5):
+            director.scene.end()
+        if (len(player4.crowns) > 5):
+            director.scene.end()
+
 
     def genwinmessage(self, winner):
         print("player " + str(winner) + "has won")
