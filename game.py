@@ -16,7 +16,7 @@ import cocos.actions as ac
 from cocos.sprite import Sprite
 from cocos.layer import *
 import pymunk.pyglet_util
-
+import music
 current_path = os.getcwd()
 sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
 import random
