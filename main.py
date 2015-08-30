@@ -279,6 +279,12 @@ class Player():
         "011crown.png",
         "012crown.png",
         "013crown.png",
+        "014crown.png",
+        "015crown.png",
+        "016crown.png",
+        "017crown.png",
+        "018crown.png",
+        "019crown.png",
         ]
         return random.choice(opt_crowns)
 
@@ -330,7 +336,7 @@ class RoundManager():
         self.genwinmessage(winner)
         self.gamestate = 'round end'
         music.queue_random(mplayer)
-        if (len(player1.crowns) > 2): 
+        if (len(player1.crowns) > 2):
             director.scene.end()
         if (len(player2.crowns) > 2):
             director.scene.end()
