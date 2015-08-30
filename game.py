@@ -241,7 +241,7 @@ class Me(ac.Move):
             self.layer.add(itspr)
             self.crownObj.append(itspr)
             i += 1
-
+        self.bbody.unsafe_set_vertices([[0,10],[35,10],[35,90+(i*25)],[0,90+(i*25)]])
 
         #print(self.crowns)
         #for item in self.crowns:

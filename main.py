@@ -243,6 +243,13 @@ class Player():
         self.crowns.append(self.random_crown())
         self.update()
 
+    def lose(self):
+        try:
+            self.crowns.pop()
+        except Exception:
+            pass
+        self.update()
+
     def random_crown(self):
         opt_crowns = [
         "001crown.png",
@@ -258,10 +265,6 @@ class Player():
 
     def select(self, char):
         self.charSprite = char
-
-    def lose(self):
-        pass
-        #self.crowns.pop(random.randrange(len(self.crowns)))
 
 class RoundManager():
 
@@ -287,8 +290,10 @@ class RoundManager():
     def player_win(self, winner):
         if winner == 1:
             player1.win()
+            player2.lose()
         if winner == 2:
             player2.win()
+            player1.lose()
         self.genwinmessage(winner)
         self.gamestate = 'round end'
         music.queue_random(mplayer)
