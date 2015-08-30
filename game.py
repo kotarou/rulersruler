@@ -19,7 +19,7 @@ import pymunk.pyglet_util
 
 current_path = os.getcwd()
 sys.path.insert(0, os.path.join(current_path, "pymunk-4.0.0"))
-
+import random
 import pymunk as pm
 from pymunk import Vec2d
 
@@ -72,8 +72,11 @@ world = {
 }
 
 space = pm.Space()
-space.gravity = Vec2d(0.0, -900.0)
+#space.gravity = Vec2d(0.0, -900.0)
+
 batch = pyglet.graphics.Batch()
+
+
 
 class MessageLayer(cocos.layer.Layer):
 
@@ -118,14 +121,15 @@ class Me(ac.Move):
         self.c = cIn
         # The root node's location
         mass = 100
-
+        self.start = start
         #self.controller = pm.Body()
 
         self.body = pm.Body(mass, pm.moment_for_box(mass**3, 40, 160))  # mass, moment
         # Somehow size is the other way around.... height width?
-        self.body.position = start  # random.randint(20,400), 200
+        self.body.position = self.start  # random.randint(20,400), 200
         #self.body.angle = 10  # random.random() * math.pi
-        self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0))
+        #self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0), radius=int(cIn))
+        self.bbody = pm.Poly(self.body, [[0,0],[40,0],[40,120],[0,120]], offset=(0,0), radius=int(cIn))
         #self.bbody = pm.Poly(self.controller, [[0,0],[40,0],[40,160],[0,160]], offset=(0,0))
         # moment = pm.moment_for_box(mass, 20, 30)
         # self.body = pm.Body(mass, moment)
@@ -182,6 +186,19 @@ class Me(ac.Move):
         self.lleg.rotation = self.body.angle
         self.rleg.rotation = self.body.angle
 
+        self.torso.scale = 0.4
+        self.head.scale = 0.4
+        self.torsor.scale = 0.4
+        self.headr.scale = 0.4
+        self.larm.scale = 0.4
+        self.rarm.scale = 0.4
+        self.lleg.scale = 0.4
+        self.rleg.scale = 0.4
+
+        self.body.elasticity = 1
+        #self.body.friction = 0.3
+        self.body.group = 0
+
         self.larmrot = 0
         self.rarmrot = 0
         self.llegrot = 0
@@ -225,6 +242,10 @@ class Me(ac.Move):
         layer.add(self.torsor)
         pass
 
+    def reset(self):
+        self.body.position = self.start
+        self.body.reset_forces()
+
 class Worldview(cocos.layer.Layer):
 
     """
@@ -261,14 +282,14 @@ class Worldview(cocos.layer.Layer):
         self.p1Object = player1
         self.p2Object = player2
 
-        self.player1 = Me(self.p1Object.charSprite, (100, 150), 0)
-        self.player2 = Me(self.p2Object.charSprite, (500, 150), 0)
+        self.player1 = Me(self.p1Object.charSprite, (100, 350), 0)
+        self.player2 = Me(self.p2Object.charSprite, (500, 350), 0)
 
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)
 
 
-        self.ruler = Ruler()
+        self.ruler = Ruler(side=0, spawnHeight=random.randint(50, 400), height=10, speed=random.randint(50, 400))
         self.ruler.addComponents(self.player_layer)
 
         self.bindings = world['bindings']
@@ -288,9 +309,12 @@ class Worldview(cocos.layer.Layer):
                         pm.Segment(static_body, (0, 500.0), (600.0, 500.0), 0.0)
                         ]
         for l in self.static_lines:
-            l.friction = 30
+            #l.friction = 0.5
+            l.elasticity = 1.0
         space.add(self.static_lines)
 
+
+        space.add_collision_handler(0, 0,begin=self.collide, pre_solve=None, post_solve=None, separate=None)
         # static_body = pm.Body()
         # static_lines = [pm.Segment(static_body, (111.0, 280.0), (407.0, 246.0), 0.0)
         #                 ,pm.Segment(static_body, (407.0, 246.0), (407.0, 343.0), 0.0)
@@ -299,6 +323,51 @@ class Worldview(cocos.layer.Layer):
         #     line.elasticity = 0.95
         # space.add(static_lines)
         self.scene = scene
+
+    def restart(self):
+        self.player1.reset()
+        self.player2.reset()
+        self.ruler.replace()
+
+    def collide(self, a, arb):
+        #print(arb.shapes)
+        obj1 = arb.shapes[0]
+        obj2 = arb.shapes[1]
+
+        # Ruler against player collisions
+        if 1 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
+            self.roundmanager.player_win(2)
+            self.ruler.replace()
+        elif 2 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
+            self.roundmanager.player_win(1)
+            self.ruler.replace()
+
+        # Player - Player collisions
+        elif 1 in [obj1.radius, obj2.radius] and 2 in [obj1.radius, obj2.radius]:
+            for c in arb.contacts:
+                obj1.body.apply_impulse(j=((obj1.body.position - obj2.body.position) * 300), r=(0,0))
+                obj2.body.apply_impulse(j=((obj2.body.position - obj1.body.position) * 300), r=(0,0))
+        # Player1 - Wall collisions
+        elif 1 in [obj1.radius, obj2.radius]:
+            print("c1 impacts wall")
+            for c in arb.contacts:
+                #print((obj1.body.position - c.position))
+                obj1.body.apply_impulse(j=((obj1.body.position - c.position) * 200), r=(0,0))
+                #obj1.body.velocity = -obj1.body.velocity
+        # Player2 - Wall collisions
+        elif 2 in [obj1.radius, obj2.radius]:
+            print("c2 impacts wall")
+            for c in arb.contacts:
+                obj2.body.apply_impulse(j=((obj2.body.position - c.position) * 200), r=(0,0))
+                #obj2.body.velocity = -obj2.body.velocity
+        else:
+            return False
+        return True
+
+
+    def notCollide(self, a, b):
+        return False
+
 
     def on_key_press(self, k, m):
         binds = self.bindings
@@ -330,39 +399,32 @@ class Worldview(cocos.layer.Layer):
         self.player2.alignPhys()
         self.ruler.alignPhys()
 
-        # a = self.player1.bbody.cache_bb()
-        # try:
-        #     self.scene.remove("aa")
-        # except:
-        #     pass
-        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        # bar.position = (a.left,a.bottom)
-        # self.scene.add(bar, 5, "aa")
+        a = self.player1.bbody.cache_bb()
+        try:
+            self.scene.remove("aa")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "aa")
 
-        # a = self.player2.bbody.cache_bb()
-        # try:
-        #     self.scene.remove("bb")
-        # except:
-        #     pass
-        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        # bar.position = (a.left,a.bottom)
-        # self.scene.add(bar, 5, "bb")
+        a = self.player2.bbody.cache_bb()
+        try:
+            self.scene.remove("bb")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "bb")
 
         a = self.ruler.bruler.cache_bb()
-        # try:
-        #     self.scene.remove("bb")
-        # except:
-        #     pass
-        # bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
-        # bar.position = (a.left,a.bottom)
-        # self.scene.add(bar, 5, "bb")
-
-        # cheeky fast assumption
-        if self.player1.bbody.point_query((a.left, a.bottom)) or self.player1.bbody.point_query((a.left, a.top)) or self.player1.bbody.point_query((a.right, a.bottom)) or self.player1.bbody.point_query((a.right, a.top)):
-            self.roundmanager.player_win("p1","p2")
-        if self.player2.bbody.point_query((a.left, a.bottom)) or self.player2.bbody.point_query((a.left, a.top)) or self.player2.bbody.point_query((a.right, a.bottom)) or self.player2.bbody.point_query((a.right, a.top)):
-            self.roundmanager.player_win("p2","p1")
-
+        try:
+            self.scene.remove("cc")
+        except:
+            pass
+        bar = cocos.layer.ColorLayer(255, 0, 0, 255, width=int(a.right-a.left), height=int(a.top-a.bottom))
+        bar.position = (a.left,a.bottom)
+        self.scene.add(bar, 5, "cc")
 
         # print(self.player.head.position)
         # print(self.player.head_attach.position)
@@ -380,23 +442,23 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Up']
         if rot != 0:
             self.p1Up += 1
-            if self.p1Up < 15:
-                self.player1.body.apply_impulse(j=(0,self.p1Up*600), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(0,2500), r=(0, 0))
+            if self.p1Up < 40:
+                self.player1.body.apply_impulse(j=(0,200), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(0,2500), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  + 10
             self.player1.rarmrot = self.player1.rarmrot  + 10
         else:
             self.p1Up = 0
         rot = buttons['p1Down']
         if rot != 0:
-            self.player1.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(0,-25000), r=(0, 0))
+            self.player1.body.apply_impulse(j=(0,-200), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(0,-25000), r=(0, 0))
             self.player1.larmrot = self.player1.larmrot  - 10
             self.player1.rarmrot = self.player1.rarmrot  - 10
         rot = buttons['p1Left']
         if rot != 0:
             self.player1.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(-1000,0), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(-1000,0), r=(0, 0))
             self.player1.llegrot = self.player1.llegrot  - 10
             self.player1.rlegrot = self.player1.rlegrot  - 10
             self.player1.torsor.do(ac.Show())
@@ -406,7 +468,7 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1Right']
         if rot != 0:
             self.player1.body.apply_impulse(j=(200,0), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(1000,0), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(1000,0), r=(0, 0))
             self.player1.llegrot = self.player1.llegrot  + 10
             self.player1.rlegrot = self.player1.rlegrot  + 10
             self.player1.torso.do(ac.Show())
@@ -417,23 +479,23 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p2Up']
         if rot != 0:
             self.p2Up += 1
-            if self.p2Up < 15:
-                self.player2.body.apply_impulse(j=(0,self.p2Up*600), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(0,25000), r=(0, 0))
+            if self.p2Up < 40:
+                self.player2.body.apply_impulse(j=(0,200), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(0,25000), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  + 10
             self.player2.rarmrot = self.player2.rarmrot  + 10
         else:
             self.p2Up = 0
         rot = buttons['p2Down']
         if rot != 0:
-            self.player2.body.apply_impulse(j=(0,-5000), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(0,-25000), r=(0, 0))
+            self.player2.body.apply_impulse(j=(0,-200), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(0,-25000), r=(0, 0))
             self.player2.larmrot = self.player2.larmrot  - 10
             self.player2.rarmrot = self.player2.rarmrot  - 10
         rot = buttons['p2Left']
         if rot != 0:
             self.player2.body.apply_impulse(j=(-200,0), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(-1000,0), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(-1000,0), r=(0, 0))
             self.player2.llegrot = self.player2.llegrot  - 10
             self.player2.rlegrot = self.player2.rlegrot  - 10
             self.player2.torsor.do(ac.Show())
@@ -443,7 +505,7 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p2Right']
         if rot != 0:
             self.player2.body.apply_impulse(j=(200,0), r=(0, 0))
-            self.ruler.rulerBody.apply_impulse(j=(1000,0), r=(0, 0))
+            # self.ruler.rulerBody.apply_impulse(j=(1000,0), r=(0, 0))
             self.player2.llegrot = self.player2.llegrot  + 10
             self.player2.rlegrot = self.player2.rlegrot  + 10
             self.player2.torsor.do(ac.Show())
@@ -455,10 +517,12 @@ class Worldview(cocos.layer.Layer):
         rot = buttons['p1die']
         if rot != 0:
             print(self.roundmanager.gamestate)
-            self.roundmanager.player_win("p1","p2")
+            self.roundmanager.player_win(1)
+
+        #self.ruler.rulerBody.apply_force((0.0, 90000.0), self.ruler.rulerBody.position)
 
 class Ruler(ac.Move):
-    def __init__(self):
+    def __init__(self, side, spawnHeight, height, speed):
         # self.xsize = 16
         # self.ysize = 141
         self.ruler = Sprite("ruler1p.png")
@@ -467,16 +531,17 @@ class Ruler(ac.Move):
         # self.wsprite = Sprite(self.spritefile)
         # self.wsprite.position = self.currx, self.curry
 
-        self.rulerBody = pm.Body(16*3, pm.moment_for_box(16, 16, 141))  # mass, moment
-        self.bruler = pm.Poly.create_box(self.rulerBody, size=(16, 141))
-        self.rulerBody.position = 325, 151  #random.randint(20,400), 200
-        self.ruler.position = 325, 151
-        self.rulerBody.angle = 90
+        self.rulerBody = pm.Body(100, pm.moment_for_box(1000**5, 800, height))  # mass, moment
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(600, height), radius=3)
+        self.rulerBody.position = -400 if side == 0 else 1200, spawnHeight  # random.randint(20,400), 200
+        self.ruler.position = self.rulerBody.position
+       # self.rulerBody.angle = 90
+        self.rulerBody.group = 2
         space.add(self.rulerBody, self.bruler)
-
+        self.rulerBody.velocity = (speed if side ==0 else -speed, 0)
     # def updatepos(xchange, ychange):
     #     pass
-
+        #self.rulerBody.apply_force((0.0, 90000000.0), self.rulerBody.position)
     def addComponents(self, layer):
          layer.add(self.ruler)
 
@@ -484,6 +549,53 @@ class Ruler(ac.Move):
     def alignPhys(self):
         self.ruler.set_position(*self.rulerBody.position)
         self.ruler.rotation = self.rulerBody.angle
+        if self.rulerBody.position[0] > 1200 or self.rulerBody.position[0] < -400:
+            self.replace()
+
+    def replace(self):
+        #self.rulerBody = pm.Body(100, pm.moment_for_box(100**3, 800, height))  # mass, moment
+        #self.bruler = pm.Poly.create_box(self.rulerBody, size=(800, height), radius=3)
+        space.remove(self.rulerBody)
+        space.remove(self.bruler)
+        height = random.randint(10, 50)
+        self.rulerBody = pm.Body(100, pm.moment_for_box(1000**5, 800, height))  # mass, moment
+        self.bruler = pm.Poly.create_box(self.rulerBody, size=(600, height), radius=3)
+        side = random.randint(0, 1)
+        spawnHeight = random.randint(50, 200)
+        speed = random.randint(100, 250)
+        self.rulerBody.position = -399 if side == 0 else 1199, spawnHeight  #random.randint(20,400), 200
+        self.ruler.position = self.rulerBody.position
+        self.rulerBody.velocity = (speed if side == 0 else -speed, 0)
+        space.add(self.rulerBody, self.bruler)
+
+# class Ruler(ac.Move):
+#     def __init__(self):
+#         # self.xsize = 16
+#         # self.ysize = 141
+#         self.ruler = Sprite("ruler1p.png")
+#         # self.currx = 300
+#         # self.curry = 113
+#         # self.wsprite = Sprite(self.spritefile)
+#         # self.wsprite.position = self.currx, self.curry
+
+#         self.rulerBody = pm.Body(16*3, pm.moment_for_box(16, 16, 141))  # mass, moment
+#         self.bruler = pm.Poly.create_box(self.rulerBody, size=(141, 16), radius=3)
+#         self.rulerBody.position = 325, 151  #random.randint(20,400), 200
+#         self.ruler.position = 325, 151
+#        # self.rulerBody.angle = 90
+#         self.rulerBody.group = 2
+#         space.add(self.rulerBody, self.bruler)
+
+#     # def updatepos(xchange, ychange):
+#     #     pass
+
+#     def addComponents(self, layer):
+#          layer.add(self.ruler)
+
+
+#     def alignPhys(self):
+#         self.ruler.set_position(*self.rulerBody.position)
+#         self.ruler.rotation = self.rulerBody.angle
 
 
 

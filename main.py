@@ -233,7 +233,7 @@ class Player():
         self.wins = len(self.crowns)
 
     def win(self):
-        self.crowns.append['crownrb.png']
+        self.crowns.append('crownrb.png')
         self.update()
 
     def select(self, char):
@@ -250,29 +250,30 @@ class RoundManager():
     def level_start(self, backgroundPathIn):
         global player1, player2
         self.gamestate = 'round start'
-
+        self.backgroundPathIn = backgroundPathIn
         scene = cocos.scene.Scene()
         backgroundLayer = BackgroundLayer(backgroundPathIn)
         scene.add(backgroundLayer, z=1)
-        playview = Worldview(scene, player1, player2, self)
-        scene.add(playview, z=0)
+        self.playview = Worldview(scene, player1, player2, self)
+        scene.add(self.playview, z=0)
         director.push(scene)
 
-    def player_win(self, winner, loser):
-        self.genwinmessage(winner, loser)
-        self.crown(winner)
+    def player_win(self, winner):
+        if winner == 1:
+            player1.win()
+        self.genwinmessage(winner)
         self.gamestate = 'round end'
         self.reset_round()
 
-    def genwinmessage(self, winner, loser):
-        print("player has won")
-        print(winner + " has overruled " + loser)
+    def genwinmessage(self, winner):
+        print("player " + str(winner) + "has won")
 
     def crown(self, winner):
         pass
         # give winner a crown
 
     def reset_round(self):
+        self.playview.restart()
         # any cleanup goes here, or ending the system
         director.push(director.pop())
 
