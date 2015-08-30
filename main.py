@@ -158,6 +158,7 @@ class CharacterMenu(Menu):
         self.items.append(ImageMenuItem('001charhead.png', self.charSelect, 1))
         self.items.append(ImageMenuItem('002charhead.png', self.charSelect, 2))
         self.items.append(ImageMenuItem('003charhead.png', self.charSelect, 3))
+        self.items.append(ImageMenuItem('004charhead.png', self.charSelect, 4))
         self.items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(self.items)
 
@@ -238,12 +239,28 @@ class Player():
         self.wins = len(self.crowns)
 
     def win(self):
-        self.crowns.append('crownrb.png')
+        self.crowns.append(self.random_crown())
         self.update()
+
+    def random_crown(self):
+        opt_crowns = [
+        "001crown.png",
+        "002crown.png",
+        "003crown.png",
+        "004crown.png",
+        "005crown.png",
+        "006crown.png",
+        "007crown.png",
+        "008crown.png",
+        ]
+        return random.choice(opt_crowns)
 
     def select(self, char):
         self.charSprite = char
 
+    def lose(self):
+        self.crowns.pop(random.randrange(len(self.crowns)))
+        
 class RoundManager():
 
     def __init__(self):
