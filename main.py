@@ -114,7 +114,7 @@ class LevelMenu(Menu):
 
         items = []
         items.append(ImageMenuItem('001backgroundPreview.png', self.levelSelect, 1))
-        items.append(ImageMenuItem('002backgroundPreview.png', self.levelSelect, 1))
+        items.append(ImageMenuItem('002backgroundPreview.png', self.levelSelect, 2))
         items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(items)
 
