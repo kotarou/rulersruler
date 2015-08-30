@@ -330,14 +330,13 @@ class RoundManager():
         self.genwinmessage(winner)
         self.gamestate = 'round end'
         music.queue_random(mplayer)
-        print(player1.crowns)
-        if (len(player1.crowns) > 5):
+        if (len(player1.crowns) > 2): 
             director.scene.end()
-        if (len(player2.crowns) > 5):
+        if (len(player2.crowns) > 2):
             director.scene.end()
-        if (len(player3.crowns) > 5):
+        if (len(player3.crowns) > 2):
             director.scene.end()
-        if (len(player4.crowns) > 5):
+        if (len(player4.crowns) > 2):
             director.scene.end()
 
     def genwinmessage(self, winner):
@@ -347,8 +346,6 @@ class RoundManager():
         self.playview.restart()
         # any cleanup goes here, or ending the system
         director.push(director.pop())
-
-
 
 def init():
     director.init(resizable=True, width=640, height=480)
