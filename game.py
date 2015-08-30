@@ -390,11 +390,13 @@ class Worldview(cocos.layer.Layer):
             self.fn_show_message("Player 1 died!")
             self.roundmanager.player_win(2)
             self.restart()
+            music.play_whack()
             return False
         elif 2 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
             self.fn_show_message("Player 2 died!")
             self.roundmanager.player_win(1)
             self.restart()
+            music.play_whack()
             return False
 
         # Player - Player collisions
