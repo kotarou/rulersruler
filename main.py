@@ -163,6 +163,7 @@ class CharacterMenu(Menu):
         self.items.append(ImageMenuItem('002charhead.png', self.charSelect, 2))
         self.items.append(ImageMenuItem('003charhead.png', self.charSelect, 3))
         self.items.append(ImageMenuItem('004charhead.png', self.charSelect, 4))
+        self.items.append(ImageMenuItem('005charhead.png', self.charSelect, 5))
         self.items.append(MenuItem('BACK', self.on_quit))
         self.create_menu(self.items)
 
