@@ -24,7 +24,7 @@ import pymunk as pm
 from pymunk import Vec2d
 
 from pyglet.window import mouse
-
+import time
 from cocos.draw import Line
 
 fe = 1.0e-4
@@ -226,7 +226,7 @@ class Me(ac.Move):
 
     def updateCrowns(self):
         for item in self.crowns:
-            spritem = Sprite(item)
+            self.spritem = Sprite(item)
             self.spritem.anchor(0,100)
 
     def alignPhys(self):
@@ -260,8 +260,9 @@ class Me(ac.Move):
         pass
 
     def reset(self):
-        self.body.position = self.start
-        self.body.reset_forces()
+        #self.body.position = self.start
+        #self.body.reset_forces()
+        #self.bbody.reset_forces()
         self.updateCrowns()
         print("d")
 
@@ -295,7 +296,7 @@ class Worldview(cocos.layer.Layer):
         self.player_layer = Layer()
         scene.add(message_layer, z=2)
         scene.add(self.player_layer,z=3)
-        self.fn_show_message = message_layer
+        self.fn_show_message = message_layer.show_message
         # Setup the character sprites
         self.p1Object = player1
         self.p2Object = player2
@@ -343,9 +344,11 @@ class Worldview(cocos.layer.Layer):
         self.scene = scene
 
     def restart(self):
+        self.ruler.replace()
         self.player1.reset()
         self.player2.reset()
-        self.ruler.replace()
+        #time.sleep(3)
+
 
     def collide(self, a, arb):
         #print(arb.shapes)
@@ -354,11 +357,15 @@ class Worldview(cocos.layer.Layer):
 
         # Ruler against player collisions
         if 1 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
+            self.fn_show_message("Player 1 died!")
             self.roundmanager.player_win(2)
-            self.ruler.replace()
+            self.restart()
+            return False
         elif 2 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
+            self.fn_show_message("Player 2 died!")
             self.roundmanager.player_win(1)
-            self.ruler.replace()
+            self.restart()
+            return False
 
         # Player - Player collisions
         elif 1 in [obj1.radius, obj2.radius] and 2 in [obj1.radius, obj2.radius]:

@@ -260,7 +260,7 @@ class Player():
 
     def lose(self):
         self.crowns.pop(random.randrange(len(self.crowns)))
-        
+
 class RoundManager():
 
     def __init__(self):
