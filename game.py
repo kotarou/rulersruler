@@ -99,7 +99,7 @@ class MessageLayer(cocos.layer.Layer):
         w, h = director.get_window_size()
 
         self.msg = cocos.text.Label(msg,
-                                    font_size=52,
+                                    font_size=16,
                                     font_name=consts['view']['font_name'],
                                     anchor_y='center',
                                     anchor_x='center')
@@ -379,6 +379,16 @@ class Worldview(cocos.layer.Layer):
         self.player2.reset()
         #time.sleep(3)
 
+    def gendeathmessage(self, loser):
+        deathmessages = [
+        (loser + ' was ruled out!'),
+        (loser + ' was overruled!'),
+        (loser + ' became ineligible for rulership.'),
+        (loser + ' was ruled unworthy!'),
+        (loser + ' was a line gauge after all.'),
+        (loser + ' was bent out of shape.'),
+        ]
+        self.fn_show_message(random.choice(deathmessages))
 
     def collide(self, a, arb):
         #print(arb.shapes)
@@ -387,13 +397,13 @@ class Worldview(cocos.layer.Layer):
 
         # Ruler against player collisions
         if 1 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
-            self.fn_show_message("Player 1 died!")
+            self.gendeathmessage("Player 1")
             self.roundmanager.player_win(2)
             self.restart()
             music.play_whack()
             return False
         elif 2 in [obj1.radius, obj2.radius] and 3 in [obj1.radius, obj2.radius]:
-            self.fn_show_message("Player 2 died!")
+            self.gendeathmessage("Player 2")
             self.roundmanager.player_win(1)
             self.restart()
             music.play_whack()
