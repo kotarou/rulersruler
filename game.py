@@ -117,7 +117,8 @@ def reflection_y(a):
     return eu.Vector2(a.x, -a.y)
 
 class Me(ac.Move):
-    def __init__(self, cIn, start, angleIn):
+    def __init__(self, cIn, start, angleIn, crowns):
+        self.crowns = crowns
         self.c = cIn
         # The root node's location
         mass = 100
@@ -176,6 +177,8 @@ class Me(ac.Move):
         # rleg.friction = 10
         # self.rleg_attach.position = self.body.position + (20,-60)
 
+        print("as")
+        self.updateCrowns()
         # body_rleg.distance = 0
         self.torso.rotation = self.body.angle
         self.head.rotation = self.body.angle
@@ -211,6 +214,10 @@ class Me(ac.Move):
                   #body_head, body_larm, body_rarm, body_lleg, body_rleg,
                   #head, torso, larm, rarm, lleg, rleg)
 
+    def updateCrowns(self):
+        for item in self.crowns:
+            spritem = Sprite(item)
+            self.spritem.anchor(0,100)
 
     def alignPhys(self):
         self.torso.set_position(*self.body.position + (20,60))
@@ -245,6 +252,8 @@ class Me(ac.Move):
     def reset(self):
         self.body.position = self.start
         self.body.reset_forces()
+        self.updateCrowns()
+        print("d")
 
 class Worldview(cocos.layer.Layer):
 
@@ -277,13 +286,12 @@ class Worldview(cocos.layer.Layer):
         scene.add(message_layer, z=2)
         scene.add(self.player_layer,z=3)
         self.fn_show_message = message_layer
-
         # Setup the character sprites
         self.p1Object = player1
         self.p2Object = player2
 
-        self.player1 = Me(self.p1Object.charSprite, (100, 350), 0)
-        self.player2 = Me(self.p2Object.charSprite, (500, 350), 0)
+        self.player1 = Me(self.p1Object.charSprite, (100, 350), 0, player1.crowns)
+        self.player2 = Me(self.p2Object.charSprite, (500, 350), 0, player2.crowns)
 
         self.player1.addComponents(self.player_layer)
         self.player2.addComponents(self.player_layer)

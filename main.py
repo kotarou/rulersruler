@@ -239,12 +239,28 @@ class Player():
         self.wins = len(self.crowns)
 
     def win(self):
-        self.crowns.append('crownrb.png')
+        self.crowns.append(self.random_crown())
         self.update()
+
+    def random_crown(self):
+        opt_crowns = [
+        "001crown.png",
+        "002crown.png",
+        "003crown.png",
+        "004crown.png",
+        "005crown.png",
+        "006crown.png",
+        "007crown.png",
+        "008crown.png",
+        ]
+        return random.choice(opt_crowns)
 
     def select(self, char):
         self.charSprite = char
 
+    def lose(self):
+        self.crowns.pop(random.randrange(len(self.crowns)))
+        
 class RoundManager():
 
     def __init__(self):
